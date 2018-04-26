@@ -3,8 +3,8 @@
 <launch>
 	<group ns="ghost">
 		<group if="$(optenv REALROBOT 0)">
-			<include file="$(find mocup_arduino)/launch/arduino.launch" />
-	    		<include file="$(find mocup_camera)/launch/camera.launch"/>
+			<include file="$(find smart_arduino)/launch/arduino.launch" />
+	    		<include file="$(find smart_camera)/launch/camera.launch"/>
 		</group>
 	</group>
 </launch>
