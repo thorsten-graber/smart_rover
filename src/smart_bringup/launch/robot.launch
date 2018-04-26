@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<launch>
+		<include file="$(find mocup_controller)/launch/controller_point_turn.launch" />
+		<group if="$(optenv REALROBOT 0)">
+			<param name="robot_description" command="$(find xacro)/xacro.py $(find mocup_description)/urdf/mocup.urdf.xacro" />	
+			<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen">
+        	    		<param name="publish_frequency" type="double" value="50.0" />
+			</node>
+			<include file="$(find mocup_driver)/launch/driver.launch" />
+			<include file="$(find mocup_arduino)/launch/arduino.launch" />
+			<!-- include file="$(find openni2_launch)/launch/openni2.launch">
+			  <arg name="publish_tf" value="false" />
+			</include -->
+	    		<include file="$(find mocup_camera)/launch/camera.launch"/>
+		</group>
+</launch>

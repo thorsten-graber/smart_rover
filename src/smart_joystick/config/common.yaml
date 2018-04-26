@@ -1,0 +1,10 @@
+speed_forward: 0.1
+speed_backward: 0.1
+slow_factor: 0.5
+steer_angle: 90
+
+camera_mode: base_stabilized
+camera_speed: 120.0
+camera_max_pan: 179
+camera_max_tilt_down: 45
+camera_max_tilt_up: 45

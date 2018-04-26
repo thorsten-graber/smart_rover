@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<launch>
+  <node pkg="smart_controller" type="smart_controller_node" name="smart_controller" output="screen">
+    <param name="vehicle_control_type" value="point_turn_driving" />
+
+    <param name="carrot_distance" value="25" />
+    <param name="speed" value="0.1" />
+    <param name="max_speed" value="0.1" />
+    <param name="check_if_blocked" value="false" />
+    <param name="velocity_blocked_limit" value="0.8" />
+    <param name="velocity_blocked_time" value="3.0" />
+
+    <param name="goal_position_tolerance" value="0.1" />
+    <param name="goal_angle_tolerance" value="0.349065852" />
+  </node>
+</launch>
+

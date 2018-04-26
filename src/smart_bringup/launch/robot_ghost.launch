@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<launch>
+	<group ns="ghost">
+		<group if="$(optenv REALROBOT 0)">
+			<include file="$(find mocup_arduino)/launch/arduino.launch" />
+	    		<include file="$(find mocup_camera)/launch/camera.launch"/>
+		</group>
+	</group>
+</launch>

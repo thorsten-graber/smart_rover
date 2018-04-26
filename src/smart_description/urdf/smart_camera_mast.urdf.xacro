@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:include filename="$(find smart_description)/urdf/smart_parameters.urdf.xacro" />
+
+  <xacro:macro name="smart_camera_mast" params="parent mount_joint_type">
+
+    <joint name="camera/z" type="${mount_joint_type}">
+      <origin xyz="${camera_mast_offset_x} ${camera_mast_offset_y} ${camera_mast_offset_z}" rpy="0 0 0" />
+      <parent link="${parent}" />
+      <child link="camera_mast_link" />
+      <axis xyz="0 0 1" />
+      <limit lower="${-2*M_PI}" upper="${2*M_PI}" effort="100" velocity="100" />
+    </joint>
+
+    <link name="camera_mast_link">
+      <inertial>
+        <mass value="0.01" />
+        <origin xyz=" 0 0 0 " />
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0"
+               iyy="0.01" iyz="0.0"
+               izz="0.01" />
+      </inertial>
+
+      <visual>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://smart_description/meshes/smart_camera_mast.dae" scale=" 0.01  0.01  0.01" />
+        </geometry>
+      </visual>
+
+      <collision>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://smart_description/meshes/smart_camera_mast.stl" scale=" 0.01  0.01  0.01" />
+        </geometry>
+      </collision>
+    </link>
+
+   <joint name="camera/y" type="${mount_joint_type}">
+      <origin xyz="${camera_base_offset_x} ${camera_base_offset_y} ${camera_base_offset_z}" rpy="0 0 0" />
+      <parent link="camera_mast_link" />
+      <child link="camera_base_link" />
+      <axis xyz="0 1 0" />
+      <limit lower="${-M_PI/4}" upper="${M_PI/4}" effort="100" velocity="100" />
+    </joint>
+
+    <link name="camera_base_link">
+      <inertial>
+        <mass value="0.01" />
+        <origin xyz=" 0 0 0 " />
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0"
+               iyy="0.01" iyz="0.0"
+               izz="0.01" />
+      </inertial>
+  </link>
+
+  </xacro:macro>
+</robot>
+

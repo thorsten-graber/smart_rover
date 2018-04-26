@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+
+<launch>
+  <arg name="dev" default="/dev/input/js0"/>
+  <arg name="deadzone" default="0.1"/>
+
+  <include file="$(find smart_joystick)/launch/joystick.launch">
+    <arg name="deadzone" value="$(arg deadzone)"/>
+    <arg name="dev" value="$(arg dev)"/>
+    <arg name="config" value="xbox_controller"/>
+  </include>
+</launch>

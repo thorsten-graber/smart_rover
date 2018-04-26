@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>smart_controller</name>
+  <version>0.0.0</version>
+  <description>The smart_controller package</description>
+
+   <!-- One maintainer tag required, multiple allowed, one person per tag -->
+  <maintainer email="Thorsten.Graber@gmail.com">Thorsten Graber</maintainer>
+
+
+  <!-- One license tag required, multiple allowed, one license per tag -->
+  <license>BSD</license>
+
+
+  <!-- Url tags are optional, but multiple are allowed, one per tag -->
+  <!-- Optional attribute type can be: website, bugtracker, or repository -->
+  <!-- <url type="website">http://wiki.ros.org/smart_controller</url> -->
+
+
+  <!-- Author tags are optional, multiple are allowed, one per tag -->
+  <!-- <author email="Thorsten.Graber@gmail.com">Thorsten Graber</author> -->
+
+
+  <!-- The *depend tags are used to specify dependencies -->
+  <!-- Dependencies can be catkin packages or system dependencies -->
+  <depend>roscpp</depend>
+  <depend>smart_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>actionlib_msgs</depend>
+  <depend>tf</depend>
+ <!--  <depend>smart_move_base_msgs</depend> -->
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+
+  <!-- The export tag contains other, unspecified, tags -->
+  <export>
+    <!-- Other tools can request additional information be placed here -->
+
+  </export>
+</package>

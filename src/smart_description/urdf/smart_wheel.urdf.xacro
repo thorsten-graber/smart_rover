@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:include filename="$(find smart_description)/urdf/smart_parameters.urdf.xacro" />
+
+  <xacro:macro name="smart_wheel" params="parent prefix suffix wheel_joint_type">
+
+   <joint name="${prefix}_${suffix}_wheel_joint" type="${wheel_joint_type}">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <axis xyz="0 1 0" />
+      <limit effort="100" velocity="100" />
+      <dynamics damping="0.0" friction="0.0" />
+      <parent link="${prefix}_${suffix}_${parent}" />
+      <child link="${prefix}_${suffix}_wheel_link" />
+    </joint>
+
+    <link name="${prefix}_${suffix}_wheel_link">
+      <inertial_sphere mass="0.1" diameter="${wheel_radius*2}" />
+      <visual>
+        <origin xyz="0 0 0" rpy="${-M_PI/2} 0 0" />
+        <geometry>
+          <cylinder radius="${wheel_radius}" length="${wheel_size_y}"/>
+        </geometry>
+        <material name="Black" />
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="${M_PI/2} 0 0" />
+        <geometry>
+          <cylinder radius="${wheel_radius}" length="${wheel_size_y}" />
+        </geometry>
+        <material name="Black"/>
+      </collision>
+    </link>
+
+  </xacro:macro>
+
+</robot>

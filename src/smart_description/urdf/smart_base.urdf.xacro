@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:include filename="$(find smart_description)/urdf/smart_wheel_suspension.urdf.xacro" />
+  <xacro:include filename="$(find smart_description)/urdf/smart_wheel.urdf.xacro" />
+
+  <xacro:include filename="$(find smart_description)/urdf/smart_camera_mast.urdf.xacro" />
+
+  <xacro:include filename="$(find smart_description)/urdf/inertia_tensors.urdf.xacro" /> 
+
+  <xacro:macro name="smart_base"  params="wheel_joint_type">
+
+   <link name="base_link">
+      <inertial_cuboid mass="2.0" x_length="0.3" y_length="0.15" z_length = "0.2"/> <!-- todo: as paramters -->
+      
+      <visual>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://smart_description/meshes/smart_base.dae" scale=" 0.01  0.01  0.01"/>
+        </geometry>
+      </visual>
+      
+      <collision>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://smart_description/meshes/smart_base.stl" scale=" 0.01  0.01  0.01"/>
+        </geometry>
+      </collision>
+    </link>
+
+    <xacro:smart_wheel_suspension parent="base_link" prefix="front" suffix="left" reflect_x="1" reflect_y="1" mount_joint_type="revolute" />
+    <xacro:smart_wheel_suspension parent="base_link" prefix="front" suffix="right" reflect_x="1" reflect_y="-1" mount_joint_type="revolute" />
+    <xacro:smart_wheel_suspension parent="base_link" prefix="middle" suffix="left" reflect_x="0" reflect_y="1" mount_joint_type="revolute" />
+    <xacro:smart_wheel_suspension parent="base_link" prefix="middle" suffix="right" reflect_x="0" reflect_y="-1" mount_joint_type="revolute" />
+    <xacro:smart_wheel_suspension parent="base_link" prefix="rear" suffix="left" reflect_x="-1" reflect_y="1" mount_joint_type="revolute" />
+    <xacro:smart_wheel_suspension parent="base_link" prefix="rear" suffix="right" reflect_x="-1" reflect_y="-1" mount_joint_type="revolute" />
+
+    <xacro:smart_wheel parent="motor_link" prefix="front" suffix="left" wheel_joint_type="${wheel_joint_type}" />
+    <xacro:smart_wheel parent="motor_link" prefix="front" suffix="right" wheel_joint_type="${wheel_joint_type}" />
+    <xacro:smart_wheel parent="motor_link" prefix="middle" suffix="left" wheel_joint_type="${wheel_joint_type}" />
+    <xacro:smart_wheel parent="motor_link" prefix="middle" suffix="right" wheel_joint_type="${wheel_joint_type}" />
+    <xacro:smart_wheel parent="motor_link" prefix="rear" suffix="left" wheel_joint_type="${wheel_joint_type}"/>
+    <xacro:smart_wheel parent="motor_link" prefix="rear" suffix="right" wheel_joint_type="${wheel_joint_type}"/>
+
+    <xacro:smart_camera_mast parent="base_link" mount_joint_type="revolute"/>
+
+ </xacro:macro>
+  
+</robot>

@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<launch>
+  <node pkg="smart_camera_controller" type="smart_camera_controller_node" name="smart_camera_controller" output="screen">
+    <param name="camera_speed" value="120" />
+    <param name="camera_max_pan" value="170" />
+    <param name="camera_max_tilt_down" value="60" />
+    <param name="camera_max_tilt_up" value="60" />
+  </node>
+</launch>
