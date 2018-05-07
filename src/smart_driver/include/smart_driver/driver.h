@@ -37,8 +37,8 @@ public:
     typedef struct {
         double right_wheel_joint;
         double left_wheel_joint;
-        double right_suspension_wheel_joint;
-        double left_suspension_wheel_joint;
+        double right_steering_wheel_joint;
+        double left_steering_wheel_joint;
         double camera_pan;
         double camera_tilt;
     } Angle;
@@ -46,8 +46,8 @@ public:
     typedef struct {
         long right_wheel_joint;
         long left_wheel_joint;
-        long right_suspension_wheel_joint;
-        long left_suspension_wheel_joint;
+        long right_steering_wheel_joint;
+        long left_steering_wheel_joint;
         long camera_pan;
         long camera_tilt;
     } Encoder;

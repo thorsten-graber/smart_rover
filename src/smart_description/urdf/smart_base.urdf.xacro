@@ -2,7 +2,7 @@
 
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
 
-  <xacro:include filename="$(find smart_description)/urdf/smart_wheel_suspension.urdf.xacro" />
+  <xacro:include filename="$(find smart_description)/urdf/smart_wheel_steering.urdf.xacro" />
   <xacro:include filename="$(find smart_description)/urdf/smart_wheel.urdf.xacro" />
 
   <xacro:include filename="$(find smart_description)/urdf/smart_camera_mast.urdf.xacro" />
@@ -29,12 +29,12 @@
       </collision>
     </link>
 
-    <xacro:smart_wheel_suspension parent="base_link" prefix="front" suffix="left" reflect_x="1" reflect_y="1" mount_joint_type="revolute" />
-    <xacro:smart_wheel_suspension parent="base_link" prefix="front" suffix="right" reflect_x="1" reflect_y="-1" mount_joint_type="revolute" />
-    <xacro:smart_wheel_suspension parent="base_link" prefix="middle" suffix="left" reflect_x="0" reflect_y="1" mount_joint_type="revolute" />
-    <xacro:smart_wheel_suspension parent="base_link" prefix="middle" suffix="right" reflect_x="0" reflect_y="-1" mount_joint_type="revolute" />
-    <xacro:smart_wheel_suspension parent="base_link" prefix="rear" suffix="left" reflect_x="-1" reflect_y="1" mount_joint_type="revolute" />
-    <xacro:smart_wheel_suspension parent="base_link" prefix="rear" suffix="right" reflect_x="-1" reflect_y="-1" mount_joint_type="revolute" />
+    <xacro:smart_wheel_steering parent="base_link" prefix="front" suffix="left" reflect_x="1" reflect_y="1" mount_joint_type="revolute" />
+    <xacro:smart_wheel_steering parent="base_link" prefix="front" suffix="right" reflect_x="1" reflect_y="-1" mount_joint_type="revolute" />
+    <xacro:smart_wheel_steering parent="base_link" prefix="middle" suffix="left" reflect_x="0" reflect_y="1" mount_joint_type="revolute" />
+    <xacro:smart_wheel_steering parent="base_link" prefix="middle" suffix="right" reflect_x="0" reflect_y="-1" mount_joint_type="revolute" />
+    <xacro:smart_wheel_steering parent="base_link" prefix="rear" suffix="left" reflect_x="-1" reflect_y="1" mount_joint_type="revolute" />
+    <xacro:smart_wheel_steering parent="base_link" prefix="rear" suffix="right" reflect_x="-1" reflect_y="-1" mount_joint_type="revolute" />
 
     <xacro:smart_wheel parent="motor_link" prefix="front" suffix="left" wheel_joint_type="${wheel_joint_type}" />
     <xacro:smart_wheel parent="motor_link" prefix="front" suffix="right" wheel_joint_type="${wheel_joint_type}" />

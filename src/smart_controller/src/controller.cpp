@@ -95,17 +95,17 @@ bool Controller::configure()
 
   ROS_INFO("Loaded %s as low level vehicle motion controller", this->vehicle_control_interface_->getName().c_str());
 
-  stateSubscriber     = nh.subscribe("state", 10, &Controller::stateCallback, this);
-  drivetoSubscriber   = nh.subscribe("driveto", 10, &Controller::drivetoCallback, this);
-  drivepathSubscriber = nh.subscribe("drivepath", 10, &Controller::drivepathCallback, this);
-  cmd_velSubscriber   = nh.subscribe("cmd_vel", 10, &Controller::cmd_velCallback, this);
-  speedSubscriber     = nh.subscribe("speed", 10, &Controller::speedCallback, this);
+  stateSubscriber     = nh.subscribe("controller/base/state", 10, &Controller::stateCallback, this);
+  drivetoSubscriber   = nh.subscribe("controller/base/driveto", 10, &Controller::drivetoCallback, this);
+  drivepathSubscriber = nh.subscribe("controller/base/drivepath", 10, &Controller::drivepathCallback, this);
+  cmd_velSubscriber   = nh.subscribe("controller/base/cmd_vel", 10, &Controller::cmd_velCallback, this);
+  speedSubscriber     = nh.subscribe("controller/base/speed", 10, &Controller::speedCallback, this);
 
 
-  carrotPosePublisher = nh.advertise<geometry_msgs::PoseStamped>("carrot", 1, true);
-  drivepathPublisher  = nh.advertise<nav_msgs::Path>("drivepath", 1, true);
+  carrotPosePublisher = nh.advertise<geometry_msgs::PoseStamped>("controller/base/carrot", 1, true);
+  drivepathPublisher  = nh.advertise<nav_msgs::Path>("controller/base/drivepath_planned", 1, true);
 
-  diagnosticsPublisher = params.advertise<std_msgs::Float64>("velocity_error", 1, true);
+  diagnosticsPublisher = nh.advertise<std_msgs::Float64>("controller/base/velocity_error", 1, true);
 
   // action interface
   ros::NodeHandle action_nh("controller");

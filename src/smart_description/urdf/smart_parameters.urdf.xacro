@@ -5,9 +5,9 @@
   <!-- Properties (Constants) -->
   <xacro:property name="M_PI" value="3.1415926535897931" />
 
-  <xacro:property name="wheel_suspension_offset_x" value="0.15" />
-  <xacro:property name="wheel_suspension_offset_y" value="0.1435" /> 
-  <xacro:property name="wheel_suspension_offset_z" value="0" /> 
+  <xacro:property name="wheel_steering_offset_x" value="0.15" />
+  <xacro:property name="wheel_steering_offset_y" value="0.1435" />
+  <xacro:property name="wheel_steering_offset_z" value="0" />
 
   <xacro:property name="wheel_radius" value="0.035" />
   <xacro:property name="wheel_size_y" value="0.035" />

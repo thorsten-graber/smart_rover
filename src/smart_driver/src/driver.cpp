@@ -54,12 +54,12 @@ Driver::Driver(const std::string& ns)
     motor_control_parameters.wheel_radius        = 0.035;
 
     motor_control_parameters.motor_states.header.frame_id = "base_link";
-    motor_control_parameters.motor_states.name.push_back("front_right_wheel_suspension_joint");
-    motor_control_parameters.motor_states.name.push_back("middle_right_wheel_suspension_joint");
-    motor_control_parameters.motor_states.name.push_back("rear_right_wheel_suspension_joint");
-    motor_control_parameters.motor_states.name.push_back("front_left_wheel_suspension_joint");
-    motor_control_parameters.motor_states.name.push_back("middle_left_wheel_suspension_joint");
-    motor_control_parameters.motor_states.name.push_back("rear_left_wheel_suspension_joint");
+    motor_control_parameters.motor_states.name.push_back("front_right_wheel_steering_joint");
+    motor_control_parameters.motor_states.name.push_back("middle_right_wheel_steering_joint");
+    motor_control_parameters.motor_states.name.push_back("rear_right_wheel_steering_joint");
+    motor_control_parameters.motor_states.name.push_back("front_left_wheel_steering_joint");
+    motor_control_parameters.motor_states.name.push_back("middle_left_wheel_steering_joint");
+    motor_control_parameters.motor_states.name.push_back("rear_left_wheel_steering_joint");
     motor_control_parameters.motor_states.name.push_back("front_right_wheel_joint");
     motor_control_parameters.motor_states.name.push_back("middle_right_wheel_joint");
     motor_control_parameters.motor_states.name.push_back("rear_right_wheel_joint");
@@ -110,15 +110,15 @@ void Driver::reset()
 
     actual_readings.motor.position.left_wheel_joint             = 0;
     actual_readings.motor.position.right_wheel_joint            = 0;
-    actual_readings.motor.position.left_suspension_wheel_joint  = 0;
-    actual_readings.motor.position.right_suspension_wheel_joint = 0;
+    actual_readings.motor.position.left_steering_wheel_joint  = 0;
+    actual_readings.motor.position.right_steering_wheel_joint = 0;
     actual_readings.motor.position.camera_pan                   = 0;
     actual_readings.motor.position.camera_tilt                  = 0;
 
     actual_readings.motor.overflow.left_wheel_joint             = 0;
     actual_readings.motor.overflow.right_wheel_joint            = 0;
-    actual_readings.motor.overflow.left_suspension_wheel_joint  = 0;
-    actual_readings.motor.overflow.right_suspension_wheel_joint = 0;
+    actual_readings.motor.overflow.left_steering_wheel_joint  = 0;
+    actual_readings.motor.overflow.right_steering_wheel_joint = 0;
     actual_readings.motor.overflow.camera_pan                   = 0;
     actual_readings.motor.overflow.camera_tilt                  = 0;
 
@@ -127,19 +127,17 @@ void Driver::reset()
     actual_readings.ultrasonic.range_rl = NO_OBSTICAL;
     actual_readings.ultrasonic.range_rr = NO_OBSTICAL;
 
-    previous_readings.stamp = ros::Time::now();
-
     previous_readings.motor.position.left_wheel_joint             = 0;
     previous_readings.motor.position.right_wheel_joint            = 0;
-    previous_readings.motor.position.left_suspension_wheel_joint  = 0;
-    previous_readings.motor.position.right_suspension_wheel_joint = 0;
+    previous_readings.motor.position.left_steering_wheel_joint  = 0;
+    previous_readings.motor.position.right_steering_wheel_joint = 0;
     previous_readings.motor.position.camera_pan                   = 0;
     previous_readings.motor.position.camera_tilt                  = 0;
 
     previous_readings.motor.overflow.left_wheel_joint             = 0;
     previous_readings.motor.overflow.right_wheel_joint            = 0;
-    previous_readings.motor.overflow.left_suspension_wheel_joint  = 0;
-    previous_readings.motor.overflow.right_suspension_wheel_joint = 0;
+    previous_readings.motor.overflow.left_steering_wheel_joint  = 0;
+    previous_readings.motor.overflow.right_steering_wheel_joint = 0;
     previous_readings.motor.overflow.camera_pan                   = 0;
     previous_readings.motor.overflow.camera_tilt                  = 0;
 
@@ -201,8 +199,8 @@ void Driver::update(const ros::TimerEvent&)
 
     // only drive, if wheel joint angle error is almost zero
     double threshold = 3*M_PI/180; // TODO: make this parameter configurable
-    double phi_l = actual_readings.motor.angle.left_suspension_wheel_joint;
-    double phi_r = actual_readings.motor.angle.right_suspension_wheel_joint;
+    double phi_l = actual_readings.motor.angle.left_steering_wheel_joint;
+    double phi_r = actual_readings.motor.angle.right_steering_wheel_joint;
 
     if ((fabs(steer_l  - phi_l) > threshold || fabs(steer_r  - phi_r) > threshold) && (!motion_cmd.mode.compare("point_turn") || !mode_old.compare("point_turn")))
     {
@@ -254,8 +252,8 @@ void Driver::readSensorsCallback(const smart_msgs::RawSensors &sensor_msg) {
     actual_readings.motor.angle.right_wheel_joint            = degToRad(posToDeg(actual_readings.motor.position.right_wheel_joint));
     actual_readings.motor.angle.left_wheel_joint             = degToRad(posToDeg(actual_readings.motor.position.left_wheel_joint));
 
-    actual_readings.motor.angle.right_suspension_wheel_joint = degToRad(sensor_msg.steer_r);
-    actual_readings.motor.angle.left_suspension_wheel_joint  = degToRad(sensor_msg.steer_l);
+    actual_readings.motor.angle.right_steering_wheel_joint = degToRad(sensor_msg.steer_r);
+    actual_readings.motor.angle.left_steering_wheel_joint  = degToRad(sensor_msg.steer_l);
     actual_readings.motor.angle.camera_pan                   = degToRad(sensor_msg.cam_yaw);
     actual_readings.motor.angle.camera_tilt                  = degToRad(sensor_msg.cam_pit);
 
@@ -288,8 +286,8 @@ void Driver::publishOdometry()
 
     alpha_r = degToRad(posToDeg(actual_readings.motor.position.right_wheel_joint - previous_readings.motor.position.right_wheel_joint));
     alpha_l = degToRad(posToDeg(actual_readings.motor.position.left_wheel_joint - previous_readings.motor.position.left_wheel_joint));
-    phi_r   = actual_readings.motor.angle.right_suspension_wheel_joint;
-    phi_l   = actual_readings.motor.angle.left_suspension_wheel_joint;
+    phi_r   = actual_readings.motor.angle.right_steering_wheel_joint;
+    phi_l   = actual_readings.motor.angle.left_steering_wheel_joint;
 
     // Compute angular velocity for ICC which is same as angular velocity of vehicle
     yaw = (alpha_l * sin(phi_l) + alpha_r * sin(phi_r))* r / l;
@@ -335,27 +333,27 @@ void Driver::publishOdometry()
     odom_trans.transform.translation.z = odom.pose.pose.position.z;
     odom_trans.transform.rotation      = odom.pose.pose.orientation;
 
-//    odom_broadcaster.sendTransform(odom_trans);
+    odom_broadcaster.sendTransform(odom_trans);
 }
 
 void Driver::publishJointStates()
 {
     // publish motor joints
-    motor_control_parameters.motor_states.position[0]  = actual_readings.motor.angle.right_suspension_wheel_joint;
+    motor_control_parameters.motor_states.position[0]  = actual_readings.motor.angle.right_steering_wheel_joint;
     motor_control_parameters.motor_states.position[1]  = 0;
-    motor_control_parameters.motor_states.position[2]  = -actual_readings.motor.angle.right_suspension_wheel_joint;
+    motor_control_parameters.motor_states.position[2]  = -actual_readings.motor.angle.right_steering_wheel_joint;
 
-    motor_control_parameters.motor_states.position[3]  = actual_readings.motor.angle.left_suspension_wheel_joint;
+    motor_control_parameters.motor_states.position[3]  = actual_readings.motor.angle.left_steering_wheel_joint;
     motor_control_parameters.motor_states.position[4]  = 0;
-    motor_control_parameters.motor_states.position[5]  = -actual_readings.motor.angle.left_suspension_wheel_joint;
+    motor_control_parameters.motor_states.position[5]  = -actual_readings.motor.angle.left_steering_wheel_joint;
 
-    motor_control_parameters.motor_states.position[6]  = actual_readings.motor.angle.right_wheel_joint;
+    motor_control_parameters.motor_states.position[6]  = actual_readings.motor.angle.right_wheel_joint / cos(actual_readings.motor.angle.right_steering_wheel_joint);;
     motor_control_parameters.motor_states.position[7]  = actual_readings.motor.angle.right_wheel_joint;
-    motor_control_parameters.motor_states.position[8]  = actual_readings.motor.angle.right_wheel_joint;
+    motor_control_parameters.motor_states.position[8]  = actual_readings.motor.angle.right_wheel_joint / cos(actual_readings.motor.angle.right_steering_wheel_joint);;
 
-    motor_control_parameters.motor_states.position[9]  = actual_readings.motor.angle.left_wheel_joint;
+    motor_control_parameters.motor_states.position[9]  = actual_readings.motor.angle.left_wheel_joint / cos(actual_readings.motor.angle.left_steering_wheel_joint);;
     motor_control_parameters.motor_states.position[10] = actual_readings.motor.angle.left_wheel_joint;
-    motor_control_parameters.motor_states.position[11] = actual_readings.motor.angle.left_wheel_joint;
+    motor_control_parameters.motor_states.position[11] = actual_readings.motor.angle.left_wheel_joint / cos(actual_readings.motor.angle.left_steering_wheel_joint);;
 
     motor_control_parameters.motor_states.position[12] = actual_readings.motor.angle.camera_pan;
     motor_control_parameters.motor_states.position[13] = actual_readings.motor.angle.camera_tilt;

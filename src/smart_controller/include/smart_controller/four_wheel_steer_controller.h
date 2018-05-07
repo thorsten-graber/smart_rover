@@ -40,7 +40,7 @@ class FourWheelSteerController: public VehicleControlInterface
       mp_ = mp;
 
       ros::NodeHandle nh;
-      drivePublisher_ = nh.advertise<smart_msgs::MotionCommand>("drive", 1);
+      drivePublisher_ = nh.advertise<smart_msgs::MotionCommand>("controller/base/drive", 1);
 
       max_steerAngle = 90.0 * M_PI/180.0;
       params.getParam("max_steerAngle", max_steerAngle);

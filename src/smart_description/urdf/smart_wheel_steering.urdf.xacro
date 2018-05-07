@@ -4,17 +4,17 @@
 
   <xacro:include filename="$(find smart_description)/urdf/smart_parameters.urdf.xacro" />
 
-  <xacro:macro name="smart_wheel_suspension" params="parent prefix suffix reflect_x reflect_y mount_joint_type">
+  <xacro:macro name="smart_wheel_steering" params="parent prefix suffix reflect_x reflect_y mount_joint_type">
 
-    <joint name="${prefix}_${suffix}_wheel_suspension_joint" type="${mount_joint_type}">
-      <origin xyz="${wheel_suspension_offset_x * reflect_x} ${wheel_suspension_offset_y * reflect_y} ${wheel_suspension_offset_z}" rpy="0 0 0" />
+    <joint name="${prefix}_${suffix}_wheel_steering_joint" type="${mount_joint_type}">
+      <origin xyz="${wheel_steering_offset_x * reflect_x} ${wheel_steering_offset_y * reflect_y} ${wheel_steering_offset_z}" rpy="0 0 0" />
       <parent link="${parent}" />
-      <child link="${prefix}_${suffix}_wheel_suspension_link" />
+      <child link="${prefix}_${suffix}_wheel_steering_link" />
       <axis xyz="0 0 1" />
       <limit lower="${-M_PI}" upper="${M_PI}" effort="100" velocity="100" />
     </joint>
 
-    <link name="${prefix}_${suffix}_wheel_suspension_link">
+    <link name="${prefix}_${suffix}_wheel_steering_link">
       <inertial>
         <mass value="0.01" />
         <origin xyz=" 0 0 0 " />
@@ -26,21 +26,21 @@
       <visual>
         <origin xyz="0.0 0.0 0.0" rpy="0 0 ${M_PI * ((reflect_y / 2) + 0.5)}" />
         <geometry>
-          <mesh filename="package://smart_description/meshes/smart_wheel_suspension.dae" scale=" 0.01  0.01  0.01" />
+          <mesh filename="package://smart_description/meshes/smart_wheel_steering.dae" scale=" 0.01  0.01  0.01" />
         </geometry>
       </visual>
 
       <collision>
         <origin xyz="0.0 0.0 0.0" rpy="0 0 ${M_PI * ((reflect_y / 2) + 0.5)}" />
         <geometry>
-          <mesh filename="package://smart_description/meshes/smart_wheel_suspension.stl" scale=" 0.01  0.01  0.01" />
+          <mesh filename="package://smart_description/meshes/smart_wheel_steering.stl" scale=" 0.01  0.01  0.01" />
         </geometry>
       </collision>
     </link>
 
    <joint name="${prefix}_${suffix}_motor_joint" type="fixed">
       <origin xyz="0 0 ${wheel_offset_z}" rpy="0 0 0" />
-      <parent link="${prefix}_${suffix}_wheel_suspension_link" />
+      <parent link="${prefix}_${suffix}_wheel_steering_link" />
       <child link="${prefix}_${suffix}_motor_link" />
     </joint>
 

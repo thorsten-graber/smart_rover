@@ -40,11 +40,11 @@ public:
         mp_ = mp;
 
         ros::NodeHandle nh;
-        drivePublisher_ = nh.advertise<smart_msgs::MotionCommand>("drive", 1);
+        drivePublisher_ = nh.advertise<smart_msgs::MotionCommand>("controller/base/drive", 1);
 
-        wheelBase = 0.304;
+        wheelBase = 0.300;
         params.getParam("wheelBase", wheelBase);
-        wheelTrack = 0.295;
+        wheelTrack = 0.285;
         params.getParam("wheelTrack", wheelTrack);
 
         reset();
