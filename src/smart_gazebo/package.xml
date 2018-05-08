@@ -1,31 +1,36 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>smart_ros_controller</name>
+  <name>smart_gazebo</name>
   <version>0.0.0</version>
-  <description>The smart_ros_controller package</description>
+  <description>The smart_gazebo package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <maintainer email="Thorsten.Graber@gmail.com">Thorsten Graber</maintainer>
 
+
   <!-- One license tag required, multiple allowed, one license per tag -->
   <license>BSD</license>
 
+
   <!-- Url tags are optional, but multiple are allowed, one per tag -->
   <!-- Optional attribute type can be: website, bugtracker, or repository -->
-  <!-- <url type="website">http://wiki.ros.org/smart_driver</url> -->
+  <!-- <url type="website">http://wiki.ros.org/smart_description</url> -->
+
 
   <!-- Author tags are optional, multiple are allowed, one per tag -->
   <!-- <author email="Thorsten.Graber@gmail.com">Thorsten Graber</author> -->
 
-  <depend>controller_interface</depend>
-  <depend>nav_msgs</depend>
-  <depend>smart_msgs</depend>
-  <depend>tf</depend>
-  <depend>control_toolbox</depend>
 
+  <depend>smart_description</depend>
+  <depend>hector_sensors_description</depend>
+  <depend>gazebo_ros</depend>
+  <depend>message_to_tf</depend>
+  <depend>robot_state_publisher</depend>
   <buildtool_depend>catkin</buildtool_depend>
 
+  <!-- The export tag contains other, unspecified, tags -->
   <export>
-    <controller_interface plugin="${prefix}/smart_ros_controller_plugins.xml"/>
+    <!-- Other tools can request additional information be placed here -->
+
   </export>
 </package>

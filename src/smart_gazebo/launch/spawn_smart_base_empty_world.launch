@@ -1,0 +1,4 @@
+<launch>
+  <include file="$(find gazebo_ros)/launch/empty_world.launch" />
+  <include file="$(find smart_gazebo)/launch/spawn_smart_base.launch" />
+</launch>

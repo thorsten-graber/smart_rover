@@ -1,5 +1,4 @@
 #include "quaternions.h"
-
 #include <boost/assign.hpp>
 
 #include </home/meteron/smart_rover/src/smart_ros_controller/include/smart_ros_controller/all_wheel_steering_controller.h>
@@ -27,32 +26,6 @@ bool AllWheelSteeringController::init(hardware_interface::RobotHW *robot_hw,
   std::size_t id = complete_ns.find_last_of("/");
   name_ = complete_ns.substr(id + 1);
 
-  // Set joint names
-  std::vector<std::string> front_wheel_names, middle_wheel_names, rear_wheel_names;
-  front_wheel_names.push_back("front_left_wheel_joint");
-  front_wheel_names.push_back("front_right_wheel_joint");
-  middle_wheel_names.push_back("middle_left_wheel_joint");
-  middle_wheel_names.push_back("middle_right_wheel_joint");
-  rear_wheel_names.push_back("rear_left_wheel_joint");
-  rear_wheel_names.push_back("rear_right_wheel_joint");
-
-  front_wheel_joints_.resize(2);
-  middle_wheel_joints_.resize(2);
-  rear_wheel_joints_.resize(2);
-
-  // Set steering joint names
-  std::vector<std::string> front_steering_names, middle_steering_names, rear_steering_names;
-  front_steering_names.push_back("front_left_wheel_steering_joint");
-  front_steering_names.push_back("front_right_wheel_steering_joint");
-  middle_steering_names.push_back("middle_left_wheel_steering_joint");
-  middle_steering_names.push_back("middle_right_wheel_steering_joint");
-  rear_steering_names.push_back("rear_left_wheel_steering_joint");
-  rear_steering_names.push_back("rear_right_wheel_steering_joint");
-
-  front_steering_joints_.resize(2);
-  middle_steering_joints_.resize(2);
-  rear_steering_joints_.resize(2);
-
   // Odometry related:
   controller_nh.param("base_frame_id", base_frame_id_, base_frame_id_);
   ROS_INFO_STREAM_NAMED(name_, "Base frame_id set to " << base_frame_id_);
@@ -61,14 +34,7 @@ bool AllWheelSteeringController::init(hardware_interface::RobotHW *robot_hw,
   ROS_INFO_STREAM_NAMED(name_, "Odom frame_id set to " << odom_frame_id_);
 
   controller_nh.param("enable_odom_tf", enable_odom_tf_, enable_odom_tf_);
-  ROS_INFO_STREAM_NAMED(name_, "Publishing to tf is "
-                        << (enable_odom_tf_?"enabled":"disabled"));
-
-  double publish_rate;
-  controller_nh.param("publish_rate", publish_rate, 50.0);
-  ROS_INFO_STREAM_NAMED(name_, "Controller state will be published at "
-                        << publish_rate << "Hz.");
-  publish_period_ = ros::Duration(1.0 / publish_rate);
+  ROS_INFO_STREAM_NAMED(name_, "Publishing to tf is " << (enable_odom_tf_?"enabled":"disabled"));
 
   // Drive command related:
   controller_nh.param("drive_cmd_timeout", motor_control_parameter_.motor_cmd_timeout, motor_control_parameter_.motor_cmd_timeout);
@@ -97,31 +63,45 @@ bool AllWheelSteeringController::init(hardware_interface::RobotHW *robot_hw,
   hardware_interface::VelocityJointInterface *const vel_joint_hw = robot_hw->get<hardware_interface::VelocityJointInterface>();
   hardware_interface::PositionJointInterface *const pos_joint_hw = robot_hw->get<hardware_interface::PositionJointInterface>();
 
-  // Get the wheel joint objects to use in the realtime loop
-  for (size_t i = 0; i < front_wheel_joints_.size(); ++i)
-  {
-    ROS_INFO_STREAM_NAMED(name_,
-                          "Adding left front wheel with joint name: " << front_wheel_names[i]
-                          << " and right middle wheel with joint name: " << middle_wheel_names[i]
-                          << " and right front wheel with joint name: " << rear_wheel_names[i]);
-    front_wheel_joints_[i]  = vel_joint_hw->getHandle(front_wheel_names[i]);  // throws on failure
-    middle_wheel_joints_[i] = vel_joint_hw->getHandle(middle_wheel_names[i]);  // throws on failure
-    rear_wheel_joints_[i]   = vel_joint_hw->getHandle(rear_wheel_names[i]);  // throws on failure
-  }
+  // Get wheel joint objects
+  front_wheel_joints_.resize(2);
+  middle_wheel_joints_.resize(2);
+  rear_wheel_joints_.resize(2);
+  front_wheel_joints_[0]  = vel_joint_hw->getHandle("front_left_wheel_joint");
+  front_wheel_joints_[1]  = vel_joint_hw->getHandle("front_right_wheel_joint");
+  middle_wheel_joints_[0] = vel_joint_hw->getHandle("middle_left_wheel_joint");
+  middle_wheel_joints_[1] = vel_joint_hw->getHandle("middle_right_wheel_joint");
+  rear_wheel_joints_[0]   = vel_joint_hw->getHandle("rear_left_wheel_joint");
+  rear_wheel_joints_[1]   = vel_joint_hw->getHandle("rear_right_wheel_joint");
 
-  // Get the steering joint objects to use in the realtime loop
-  for (size_t i = 0; i < front_steering_joints_.size(); ++i)
-  {
-    ROS_INFO_STREAM_NAMED(name_,
-                          "Adding left steering with joint name: " << front_steering_names[i]
-                          << " and right steering with joint name: " << rear_steering_names[i]);
-    front_steering_joints_[i]  = pos_joint_hw->getHandle(front_steering_names[i]);  // throws on failure
-    middle_steering_joints_[i] = pos_joint_hw->getHandle(middle_steering_names[i]);  // throws on failure
-    rear_steering_joints_[i]   = pos_joint_hw->getHandle(rear_steering_names[i]);  // throws on failure
-  }
+  // Get steering joint objects
+  front_steering_joints_.resize(2);
+  middle_steering_joints_.resize(2);
+  rear_steering_joints_.resize(2);
+  front_steering_joints_[0]  = pos_joint_hw->getHandle("front_left_wheel_steering_joint");
+  front_steering_joints_[1]  = pos_joint_hw->getHandle("front_right_wheel_steering_joint");
+  middle_steering_joints_[0] = pos_joint_hw->getHandle("middle_left_wheel_steering_joint");
+  middle_steering_joints_[1] = pos_joint_hw->getHandle("middle_right_wheel_steering_joint");
+  rear_steering_joints_[0]   = pos_joint_hw->getHandle("rear_left_wheel_steering_joint");
+  rear_steering_joints_[1]   = pos_joint_hw->getHandle("rear_right_wheel_steering_joint");
+
+  // Init PID controllers
+  pid_controllers_.resize(12);
+  pid_controllers_.push_back(control_toolbox::Pid().init(controller_nh, "gains/front_left_wheel_joint"));
+  pid_controllers_.push_back(control_toolbox::Pid().init(controller_nh, "gains/front_right_wheel_joint"));
+  pid_controllers_.push_back(control_toolbox::Pid().init(controller_nh, "gains/middle_left_wheel_joint"));
+  pid_controllers_.push_back(control_toolbox::Pid().init(controller_nh, "gains/middle_right_wheel_joint"));
+  pid_controllers_.push_back(control_toolbox::Pid().init(controller_nh, "gains/rear_left_wheel_joint"));
+  pid_controllers_.push_back(control_toolbox::Pid().init(controller_nh, "gains/rear_right_wheel_joint"));
+
+  pid_controllers_.push_back(control_toolbox::Pid().init(controller_nh, "gains/front_left_wheel_steering_joint"));
+  pid_controllers_.push_back(control_toolbox::Pid().init(controller_nh, "gains/front_right_wheel_steering_joint"));
+  pid_controllers_.push_back(control_toolbox::Pid().init(controller_nh, "gains/middle_left_wheel_steering_joint"));
+  pid_controllers_.push_back(control_toolbox::Pid().init(controller_nh, "gains/middle_right_wheel_steering_joint"));
+  pid_controllers_.push_back(control_toolbox::Pid().init(controller_nh, "gains/rear_left_wheel_steering_joint"));
+  pid_controllers_.push_back(control_toolbox::Pid().init(controller_nh, "gains/rear_right_wheel_steering_joint"));
 
   reset();
-
 
   motion_command_subscriber_ = controller_nh.subscribe("command", 10, &AllWheelSteeringController::motionCommandCallback, this);
   ultrasonic_sensors_subscriber_ = root_nh.subscribe("ultrasonic/sensors", 10, &AllWheelSteeringController::ultrasonicSensorsCallback, this);
@@ -153,18 +133,19 @@ void AllWheelSteeringController::reset()
 void AllWheelSteeringController::update(const ros::Time& time, const ros::Duration& period)
 {
   updateOdometry(time, period);
-  updateCommand(time);
+  updateCommand(period);
 }
 
 void AllWheelSteeringController::starting(const ros::Time& time)
 {
-  brake();
+  for(int i=0;i<12;i++) {
+    pid_controllers_[i].reset();
+  }
 
-  // Register starting time used to keep fixed rate
-  last_state_publish_time_ = time;
+  brake();
 }
 
-void AllWheelSteeringController::stopping(const ros::Time& /*time*/)
+void AllWheelSteeringController::stopping(const ros::Time& time)
 {
   brake();
 }
@@ -206,43 +187,33 @@ void AllWheelSteeringController::updateOdometry(const ros::Time& time, const ros
   odom_.pose.pose.orientation = odom_.pose.pose.orientation*orientation;
 
   // Publish odometry message
-  if (last_state_publish_time_ + publish_period_ < time)
-  {
-    last_state_publish_time_ += publish_period_;
+  odom_publisher_.publish(odom_);
 
-    //publish message
-    odom_publisher_.publish(odom_);
+  // Publish tf /odom frame
+  if (enable_odom_tf_) {
+    // Publish tf
+    odom_trans_.header.stamp    = time;
+    odom_trans_.transform.translation.x = odom_.pose.pose.position.x;
+    odom_trans_.transform.translation.y = odom_.pose.pose.position.y;
+    odom_trans_.transform.translation.z = odom_.pose.pose.position.z;
+    odom_trans_.transform.rotation      = odom_.pose.pose.orientation;
 
-    // Publish tf /odom frame
-    if (enable_odom_tf_)
-    {
-      // Publish tf
-      odom_trans_.header.stamp    = time;
-      odom_trans_.transform.translation.x = odom_.pose.pose.position.x;
-      odom_trans_.transform.translation.y = odom_.pose.pose.position.y;
-      odom_trans_.transform.translation.z = odom_.pose.pose.position.z;
-      odom_trans_.transform.rotation      = odom_.pose.pose.orientation;
-
-      odom_broadcaster_.sendTransform(odom_trans_);
-    }
+    odom_broadcaster_.sendTransform(odom_trans_);
   }
 }
 
-void AllWheelSteeringController::updateCommand(const ros::Time& time)
+void AllWheelSteeringController::updateCommand(const ros::Duration &period)
 {
   // process motion command message
   double steer_l, steer_r, speed_r, speed_l;
-
-  double r = motor_control_parameter_.wheel_radius;
-
-
   double cmd_vel = limitVelocity(motion_cmd_.speed);
+  const double r = motor_control_parameter_.wheel_radius;
 
   // update desired motor velocity/position based on control mode
   if(!strcmp(motion_cmd_.mode.c_str(), "continuous")) {
     // limit max dynamic in steering (max delta per step)
     const double max_delta = 0.0025;
-    const double delta = motion_cmd_.steer-steer_old_;
+    double delta = motion_cmd_.steer-steer_old_;
     double steer = (fabs(delta) > max_delta) ? (steer_old_+(double)sgn(delta) * max_delta) : motion_cmd_.steer;
     steer_old_ = steer;
 
@@ -262,12 +233,16 @@ void AllWheelSteeringController::updateCommand(const ros::Time& time)
     speed_r = 0;
   }
 
+  const double phi_fl = front_steering_joints_[0].getPosition();
+  const double phi_fr = front_steering_joints_[1].getPosition();
+  const double phi_ml = middle_steering_joints_[0].getPosition();
+  const double phi_mr = middle_steering_joints_[1].getPosition();
+  const double phi_rl = rear_steering_joints_[0].getPosition();
+  const double phi_rr = rear_steering_joints_[1].getPosition();
+
   // only drive, if wheel joint angle error is almost zero
   const double threshold = 3*M_PI/180; // TODO: make this parameter configurable
-  const double phi_l = front_steering_joints_[0].getPosition();
-  const double phi_r = front_steering_joints_[1].getPosition();
-
-  if ((fabs(steer_l  - phi_l) > threshold || fabs(steer_r  - phi_r) > threshold) && (!motion_cmd_.mode.compare("point_turn") || !mode_old_.compare("point_turn")))
+  if ((fabs(steer_l  - phi_fl) > threshold || fabs(steer_r  - phi_fr) > threshold) && (!motion_cmd_.mode.compare("point_turn") || !mode_old_.compare("point_turn")))
   {
     mode_old_ = "point_turn";
     speed_l = 0.0;
@@ -276,28 +251,67 @@ void AllWheelSteeringController::updateCommand(const ros::Time& time)
     mode_old_ = motion_cmd_.mode.c_str();
   }
 
-//  //omega = speed(wheel speed) * 720(ticks per turn) * 0.02ms(controller frequency) * 3/2(gear factor) / r(wheel radius)
-//  motor_control_parameters.control_input.speed_r = speed_r * 720 * 0.02 * 3 / 2 / r; // todo: make parameters configurable
-//  motor_control_parameters.control_input.speed_l = speed_l * 720 * 0.02 * 3 / 2 / r; // todo: make parameters configurable
+  //omega = speed(wheel speed) * 720(ticks per turn) * 0.02ms(controller frequency) * 3/2(gear factor) / r(wheel radius)
+  speed_l /= r;
+  speed_r /= r;
 
-//  ROS_DEBUG_STREAM_THROTTLE(1, "vel_left_rear "<<vel_left_rear<<" front_right_steering "<<front_right_steering);
-//  // Set wheels velocities:
-//  if(front_wheel_joints_.size() == 2 && rear_wheel_joints_.size() == 2)
-//  {
-//    front_wheel_joints_[0].setCommand(vel_left_front);
-//    front_wheel_joints_[1].setCommand(vel_right_front);
-//    rear_wheel_joints_[0].setCommand(vel_left_rear);
-//    rear_wheel_joints_[1].setCommand(vel_right_rear);
-//  }
+  // Set wheels velocities:
+  front_wheel_joints_[0].setCommand(pid_controllers_[0].computeCommand( speed_l / cos(phi_fl) - front_wheel_joints_[0].getVelocity(),  period));
+  front_wheel_joints_[1].setCommand(pid_controllers_[1].computeCommand( speed_r / cos(phi_fr) - front_wheel_joints_[1].getVelocity(),  period));
+  middle_wheel_joints_[0].setCommand(pid_controllers_[2].computeCommand(speed_l               - middle_wheel_joints_[0].getVelocity(), period));
+  middle_wheel_joints_[1].setCommand(pid_controllers_[3].computeCommand(speed_r               - middle_wheel_joints_[1].getVelocity(), period));
+  rear_wheel_joints_[0].setCommand(pid_controllers_[4].computeCommand(  speed_l / cos(phi_rl) - rear_wheel_joints_[0].getVelocity(),   period));
+  rear_wheel_joints_[1].setCommand(pid_controllers_[5].computeCommand(  speed_r / cos(phi_rr) - rear_wheel_joints_[1].getVelocity(),   period));
 
-//  /// TODO check limits to not apply the same steering on right and left when saturated !
-//  if(front_steering_joints_.size() == 2 && rear_steering_joints_.size() == 2)
-//  {
-//    front_steering_joints_[0].setCommand(front_left_steering);
-//    front_steering_joints_[1].setCommand(front_right_steering);
-//    rear_steering_joints_[0].setCommand(rear_left_steering);
-//    rear_steering_joints_[1].setCommand(rear_right_steering);
-//  }
+  // Set steering
+  front_steering_joints_[0].setCommand(pid_controllers_[6].computeCommand( steer_l  - phi_fl, front_steering_joints_[0].getVelocity(),  period));
+  front_steering_joints_[1].setCommand(pid_controllers_[7].computeCommand( steer_r  - phi_fr, front_steering_joints_[1].getVelocity(),  period));
+  middle_steering_joints_[0].setCommand(pid_controllers_[8].computeCommand(0.0      - phi_ml, middle_steering_joints_[0].getVelocity(), period));
+  middle_steering_joints_[1].setCommand(pid_controllers_[9].computeCommand(0.0      - phi_mr, middle_steering_joints_[1].getVelocity(), period));
+  rear_steering_joints_[0].setCommand(pid_controllers_[10].computeCommand( -steer_l - phi_fl, rear_steering_joints_[0].getVelocity(),   period));
+  rear_steering_joints_[1].setCommand(pid_controllers_[11].computeCommand( -steer_r - phi_fl, rear_steering_joints_[1].getVelocity(),   period));
+}
+
+void AllWheelSteeringController::ComputeLocomotion(double speed, double steer, double &speed_l, double &speed_r, double &steer_l, double &steer_r)
+{
+    const double b = motor_control_parameter_.wheel_track;
+    const double l = motor_control_parameter_.wheel_base;
+
+    double tan_steer;
+    if(steer > M_PI_2) {
+        tan_steer = tan(M_PI_2);
+    } else if(steer < -M_PI_2) {
+        tan_steer = tan(-M_PI_2);
+    } else {
+        tan_steer = tan(steer);
+    }
+
+    steer_l = atan2(l*tan_steer,l-b*tan_steer);
+    steer_r = atan2(l*tan_steer,l+b*tan_steer);
+
+    speed_l = speed*(1-b*tan_steer/l);
+    speed_r = speed*(1+b*tan_steer/l);
+
+    // limit wheel speeds for small radius
+    if(steer > 0) {
+        // turn left -> check right wheel speed
+        if(speed_r > motor_control_parameter_.max_velocity) {
+            speed_r = motor_control_parameter_.max_velocity;
+            speed_l = speed_r*(l-b*tan_steer)/(l+b*tan_steer);
+        } else if(speed_r < -motor_control_parameter_.max_velocity) {
+            speed_r = -motor_control_parameter_.max_velocity;
+            speed_l = speed_r*(l-b*tan_steer)/(l+b*tan_steer);
+        }
+    } else {
+        // turn right -> check left wheel speed
+        if(speed_l > motor_control_parameter_.max_velocity) {
+            speed_l = motor_control_parameter_.max_velocity;
+            speed_r = speed_l*(l+b*tan_steer)/(l-b*tan_steer);
+        } else if(speed_l < -motor_control_parameter_.max_velocity) {
+            speed_l = -motor_control_parameter_.max_velocity;
+            speed_r = speed_l*(l+b*tan_steer)/(l-b*tan_steer);
+        }
+    }
 }
 
 double AllWheelSteeringController::limitVelocity(double value) {
@@ -322,20 +336,16 @@ double AllWheelSteeringController::limitVelocity(double value) {
 
 void AllWheelSteeringController::brake()
 {
-  const double vel = 0.0;
-  for (size_t i = 0; i < front_wheel_joints_.size(); ++i)
-  {
-    front_wheel_joints_[i].setCommand(vel);
-    middle_wheel_joints_[i].setCommand(vel);
-    rear_wheel_joints_[i].setCommand(vel);
+  for (size_t i = 0; i < front_wheel_joints_.size(); ++i) {
+    front_wheel_joints_[i].setCommand(0.0);
+    middle_wheel_joints_[i].setCommand(0.0);
+    rear_wheel_joints_[i].setCommand(0.0);
   }
 
-  const double pos = 0.0;
-  for (size_t i = 0; i < front_steering_joints_.size(); ++i)
-  {
-    front_steering_joints_[i].setCommand(pos);
-    middle_steering_joints_[i].setCommand(pos);
-    rear_steering_joints_[i].setCommand(pos);
+  for (size_t i = 0; i < front_steering_joints_.size(); ++i) {
+    front_steering_joints_[i].setCommand(0.0);
+    middle_steering_joints_[i].setCommand(0.0);
+    rear_steering_joints_[i].setCommand(0.0);
   }
 }
 
@@ -397,3 +407,4 @@ void AllWheelSteeringController::setOdomPubFields(ros::NodeHandle& controller_nh
 }
 
 } // namespace smart_ros_controller
+PLUGINLIB_EXPORT_CLASS(smart_ros_controller::AllWheelSteeringController, controller_interface::ControllerBase)

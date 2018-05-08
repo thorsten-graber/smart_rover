@@ -8,9 +8,8 @@ set(${PROJECT_NAME}_CATKIN_DEPS
     controller_interface
     nav_msgs
     smart_msgs
-    realtime_tools
     tf
-    urdf_geometry_parser)
+    control_toolbox)
 
 find_package(catkin REQUIRED COMPONENTS ${${PROJECT_NAME}_CATKIN_DEPS})
 

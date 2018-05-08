@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+ <macro name="smart_materials">
+
+  <!-- GAZEBO MATERIALS -->
+  <gazebo reference="base_link">
+    <material>Gazebo/Grey</material>
+  </gazebo>
+
+  <gazebo reference="front_left_wheel_suspension_link" >
+    <material>Gazebo/Grey</material>
+  </gazebo>
+
+  <gazebo reference="front_right_wheel_suspension_link" >
+    <material>Gazebo/Grey</material>
+  </gazebo>
+
+  <gazebo reference="middle_left_wheel_suspension_link" >
+    <material>Gazebo/Grey</material>
+  </gazebo>
+
+  <gazebo reference="middle_right_wheel_suspension_link" >
+    <material>Gazebo/Grey</material>
+  </gazebo>
+
+  <gazebo reference="rear_left_wheel_suspension_link" >
+    <material>Gazebo/Grey</material>
+  </gazebo>
+
+  <gazebo reference="rear_right_wheel_suspension_link" >
+    <material>Gazebo/Grey</material>
+  </gazebo>
+
+  <gazebo reference="front_left_motor_link" >
+    <material>Gazebo/Red</material>
+  </gazebo>
+
+  <gazebo reference="front_right_motor_link" >
+    <material>Gazebo/Red</material>
+  </gazebo>
+
+  <gazebo reference="middle_left_motor_link" >
+    <material>Gazebo/Red</material>
+  </gazebo>
+
+  <gazebo reference="middle_right_motor_link" >
+    <material>Gazebo/Red</material>
+  </gazebo>
+
+  <gazebo reference="rear_left_motor_link" >
+    <material>Gazebo/Red</material>
+  </gazebo>
+
+  <gazebo reference="rear_right_motor_link" >
+    <material>Gazebo/Red</material>
+  </gazebo>
+
+  <gazebo reference="front_left_wheel_link" >
+    <material>Gazebo/Black</material>
+  </gazebo>
+
+  <gazebo reference="front_right_wheel_link" >
+    <material>Gazebo/Black</material>
+  </gazebo>
+
+  <gazebo reference="middle_left_wheel_link" >
+    <material>Gazebo/Black</material>
+  </gazebo>
+
+  <gazebo reference="middle_right_wheel_link" >
+    <material>Gazebo/Black</material>
+  </gazebo>
+
+  <gazebo reference="rear_left_wheel_link" >
+    <material>Gazebo/Black</material>
+  </gazebo>
+
+  <gazebo reference="rear_right_wheel_link" >
+    <material>Gazebo/Black</material>
+  </gazebo>
+
+  <gazebo reference="camera_mast_link" >
+    <material>Gazebo/Grey</material>
+  </gazebo>
+
+</macro>
+</robot>

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro"
+       name="smart">
+
+  <xacro:include filename="$(find smart_description)/urdf/smart_parameters.urdf.xacro" />
+  <xacro:include filename="$(find smart_description)/urdf/materials.urdf.xacro" />
+
+  <xacro:include filename="$(find smart_description)/urdf/smart_base.urdf.xacro" />
+  <xacro:smart_base wheel_joint_type="continuous" />
+
+  <xacro:include filename="$(find hector_sensors_description)/urdf/asus_camera.urdf.xacro" />
+    <xacro:asus_camera name="camera" parent="camera_base_link">
+      <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    </xacro:asus_camera>
+
+  <xacro:include filename="$(find smart_gazebo)/urdf/smart_materials.urdf.xacro" />
+  <xacro:smart_materials/>
+
+</robot>

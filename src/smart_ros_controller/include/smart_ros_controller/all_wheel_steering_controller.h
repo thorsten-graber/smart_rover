@@ -1,7 +1,7 @@
 /*********************************************************************
  * Software License Agreement (BSD License)
  *
- *  Copyright (c) 2017, Irstea
+ *  Copyright (c) 2018, Thorsten Graber
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -41,9 +41,7 @@
 #include <smart_msgs/UltrasonicSensors.h>
 #include <tf/tfMessage.h>
 #include <tf/transform_broadcaster.h>
-
-#include <realtime_tools/realtime_buffer.h>
-#include <realtime_tools/realtime_publisher.h>
+#include <control_toolbox/pid.h>
 
 namespace smart_ros_controller{
 
@@ -107,7 +105,7 @@ private:
      * \param time   Current time
      * \param period Time since the last called to update
      */
-  void updateCommand(const ros::Time& time);
+  void updateCommand(const ros::Duration& period);
 
   /**
      * \brief Brakes the wheels, i.e. sets the velocity to 0
@@ -163,9 +161,10 @@ private:
   double steer_old_;
   std::string mode_old_;
 
+  /// PID controller related:
+  std::vector<control_toolbox::Pid> pid_controllers_;
+
   /// Odometry related:
-  ros::Duration publish_period_;
-  ros::Time last_state_publish_time_;
   nav_msgs::Odometry odom_;
   geometry_msgs::TransformStamped odom_trans_;
   tf::TransformBroadcaster odom_broadcaster_;
@@ -173,6 +172,4 @@ private:
   std::string odom_frame_id_;
   bool enable_odom_tf_;
 };
-
-PLUGINLIB_EXPORT_CLASS(smart_ros_controller::AllWheelSteeringController, controller_interface::ControllerBase);
 } // namespace smart_ros_controller
