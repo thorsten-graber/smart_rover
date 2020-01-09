@@ -26,6 +26,7 @@
   <depend>roscpp</depend>
   <depend>smart_msgs</depend>
   <depend>geometry_msgs</depend>
+  <depend>std_msgs</depend>
   <buildtool_depend>catkin</buildtool_depend>
 
 

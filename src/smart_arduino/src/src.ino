@@ -32,30 +32,23 @@ mocup_msgs::RawSensors sensor_readings;
 
 void motorCommandCallback(const mocup_msgs::MotorCommand& cmd_msg)
 {   
-//    m1.setSpeed(-cmd_msg.speed_r);
-//    m2.goToAngle(cmd_msg.steer_r);
-//    m3.setSpeed(-cmd_msg.speed_l);
-//    m4.goToAngle(cmd_msg.steer_l);
-//    m5.goToAngle(-cmd_msg.cam_yaw);
-//    m6.goToAngle(-cmd_msg.cam_pit);
+    m1.setSpeed(-cmd_msg.speed_r);
+    m2.goToAngle(cmd_msg.steer_r);
+    m3.setSpeed(-cmd_msg.speed_l);
+    m4.goToAngle(cmd_msg.steer_l);
+    m5.goToAngle(-cmd_msg.cam_yaw);
+    m6.goToAngle(-cmd_msg.cam_pit);
 
-//    m1.update();
-//    m2.update();
-//    m3.update();
-//    m4.update();
-//    m5.update();
-//    m6.update();
-
-      m1.setFixedDrive(-cmd_msg.speed_r);
-      m2.setFixedDrive(cmd_msg.steer_r);
-      m3.setFixedDrive(-cmd_msg.speed_l);
-      m4.setFixedDrive(cmd_msg.steer_l);
-      m5.setFixedDrive(-cmd_msg.cam_yaw);
-      m6.setFixedDrive(-cmd_msg.cam_pit);
+    m1.update();
+    m2.update();
+    m3.update();
+    m4.update();
+    m5.update();
+    m6.update();
 }
 
-ros::Publisher sensor_publisher("base/controller/raw_sensors", &sensor_readings);
-ros::Subscriber<mocup_msgs::MotorCommand> motor_command_subscriber("base/controller/motor_command", motorCommandCallback);
+ros::Publisher sensor_publisher("sensor_readings", &sensor_readings);
+ros::Subscriber<mocup_msgs::MotorCommand> motor_command_subscriber("motor_command", motorCommandCallback);
 
 void publishSensorReadings()
 {
@@ -78,29 +71,29 @@ void setup()
     nh.advertise(sensor_publisher);
     nh.subscribe(motor_command_subscriber);
 
-//    // Initialize the motor connections
-//    m1.pidSetUpdateFrequencyMS(UPDATE_INTERVAL);
-//    m1.pidSetTunings(1.1,64.0,0.0);
-//    m1.begin();
-//    m2.pidSetUpdateFrequencyMS(UPDATE_INTERVAL);
-//    m2.pidSetTunings(0.6,0.0,0.0);
-//    m2.setAngleOutputMultiplier(222);
-//    m2.begin();
-//    m3.pidSetUpdateFrequencyMS(UPDATE_INTERVAL);
-//    m3.pidSetTunings(1.0,64.0,0.0);
-//    m3.begin();
-//    m4.pidSetUpdateFrequencyMS(UPDATE_INTERVAL);
-//    m4.pidSetTunings(0.6,0.0,0.00);
-//    m4.setAngleOutputMultiplier(222);
-//    m4.begin();
-//    m5.pidSetUpdateFrequencyMS(UPDATE_INTERVAL);
-//    m5.pidSetTunings(5.64,0.0,0.12);
-//    m5.setAngleOutputMultiplier(1);
-//    m5.begin();
-//    m6.pidSetUpdateFrequencyMS(UPDATE_INTERVAL);
-//    m6.pidSetTunings(6.64,0.0,0.12);
-//    m6.setAngleOutputMultiplier(1);
-//    m6.begin();
+    // Initialize the motor connections
+    m1.pidSetUpdateFrequencyMS(UPDATE_INTERVAL);
+    m1.pidSetTunings(1.1,64.0,0.0);
+    m1.begin();
+    m2.pidSetUpdateFrequencyMS(UPDATE_INTERVAL);
+    m2.pidSetTunings(0.6,0.0,0.0);
+    m2.setAngleOutputMultiplier(222);
+    m2.begin();
+    m3.pidSetUpdateFrequencyMS(UPDATE_INTERVAL);
+    m3.pidSetTunings(1.0,64.0,0.0);
+    m3.begin();
+    m4.pidSetUpdateFrequencyMS(UPDATE_INTERVAL);
+    m4.pidSetTunings(0.6,0.0,0.00);
+    m4.setAngleOutputMultiplier(222);
+    m4.begin();
+    m5.pidSetUpdateFrequencyMS(UPDATE_INTERVAL);
+    m5.pidSetTunings(5.64,0.0,0.12);
+    m5.setAngleOutputMultiplier(1);
+    m5.begin();
+    m6.pidSetUpdateFrequencyMS(UPDATE_INTERVAL);
+    m6.pidSetTunings(6.64,0.0,0.12);
+    m6.setAngleOutputMultiplier(1);
+    m6.begin();
 
     // Initialize the ultrasonic sensor connections
     u1.begin();

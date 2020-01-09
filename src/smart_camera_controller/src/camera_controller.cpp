@@ -2,10 +2,13 @@
 #include <smart_msgs/MotionCommand.h>
 #include <geometry_msgs/QuaternionStamped.h>
 #include <geometry_msgs/Twist.h>
+#include <std_msgs/Float64.h>
 
 namespace smart {
 
   ros::Subscriber cameraCommandInput;
+  ros::Subscriber cameraCommandPanInput;
+  ros::Subscriber cameraCommandTiltInput;
   ros::Publisher cameraCommandOutput;
 
   smart_msgs::MotionCommand motionCommand;
@@ -33,6 +36,18 @@ namespace smart {
 
       publishCamera();
 
+  }
+
+  void cameraPanCommandCallback(const std_msgs::Float64::ConstPtr &pan) {
+    cameraPan = pan->data;
+
+    publishCamera();
+  }
+
+  void cameraTiltCommandCallback(const std_msgs::Float64::ConstPtr &tilt) {
+    cameraTilt = tilt->data;
+
+    publishCamera();
   }
 
   void moveCamera(double dt) {
@@ -68,6 +83,8 @@ int main(int argc, char **argv) {
   ros::NodeHandle n;
 
   cameraCommandInput = n.subscribe<geometry_msgs::Twist>("cmd_camera_vel", 10, cameraCommandCallback);
+  cameraCommandPanInput = n.subscribe<std_msgs::Float64>("cmd_camera_pan", 10, cameraPanCommandCallback);
+  cameraCommandTiltInput = n.subscribe<std_msgs::Float64>("cmd_camera_tilt", 10, cameraTiltCommandCallback);
   cameraCommandOutput = n.advertise<geometry_msgs::QuaternionStamped>("camera/command", 10, false);
 
   ros::param::param("~camera_mode", smart::cameraMode, std::string("base_stabilized"));

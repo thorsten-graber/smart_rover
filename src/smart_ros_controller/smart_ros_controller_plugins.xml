@@ -1,9 +1,0 @@
-<library path="lib/libsmart_ros_controller">
-
-  <class name="smart_ros_controller/AllWheelSteeringController" type="smart_ros_controller::AllWheelSteeringController" base_class_type="controller_interface::ControllerBase">
-    <description>
-      AllWheelSteeringController is based on the FourWheelSteeringController.
-    </description>
-  </class>
-
-</library>

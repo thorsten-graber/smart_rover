@@ -17,4 +17,7 @@
   <xacro:include filename="$(find smart_gazebo)/urdf/smart_materials.urdf.xacro" />
   <xacro:smart_materials/>
 
+  <xacro:include filename="$(find smart_gazebo)/urdf/smart_base_controllers.urdf.xacro" />
+  <xacro:smart_base_controllers/>
+
 </robot>

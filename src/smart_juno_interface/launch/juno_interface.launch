@@ -1,0 +1,104 @@
+<launch>
+        <node name="juno_smart_interface" type="juno_simulator" pkg="juno_simulator" output="screen">
+
+            <!-- Main program sleep interval, defines the publishMonitoringParameters rate -->
+            <param name="tm_frequency" type="int" value="1"/>
+            <param name="tc_frequency" type="int" value="50"/>
+
+            <!-- Gazebo sim topics -->
+            <param name="gazebo_cmd_vel_topic" type="str" value="cmd_vel" />
+            <param name="gazebo_cmd_ptz_pan_topic" type="str" value="cmd_camera_pan" />
+            <param name="gazebo_cmd_ptz_tilt_topic" type="str" value="cmd_camera_tilt" />
+            <param name="gazebo_cmd_ptz_zoom_topic" type="str" value="cmd_camera_zoom" />
+            <param name="gazebo_odom_topic" type="str" value="state" />
+            <param name="gazebo_left_cam_img_topic" type="str" value="left_cam/image_raw/compressed" />
+            <param name="gazebo_right_cam_img_topic" type="str" value="right_cam/image_raw/compressed" />
+            <param name="gazebo_centre_cam_img_topic" type="str" value="centre_cam/image_raw/compressed" />
+            <param name="gazebo_ptz_cam_img_topic" type="str" value="camera/rgb/image_raw/compressed" />
+            <param name="gazebo_scanner_points_topic" type="str" value="scanner/points" />
+
+            <!-- Commanding Services topics -->
+            <param name="move_by_distance_service_topic" type="str" value="trt/move_by_distance" />
+            <param name="turn_by_angle_service_topic" type="str" value="trt/turn_by_angle" />
+            <param name="abort_service_topic" type="str" value="trt/abort" />
+            <param name="pause_service_topic" type="str" value="trt/pause" />
+            <param name="resume_service_topic" type="str" value="trt/resume" />
+            <param name="ptz_pt_absolute_service_topic" type="str" value="artemisJr/cmdTrtPtzPanTiltAbs" />
+            <param name="ptz_pt_relative_service_topic" type="str" value="artemisJr/cmdTrtPtzPanTiltRel" />
+            <param name="ptz_z_absolute_service_topic" type="str" value="artemisJr/cmdTrtPtzZoomAbs" />
+            <param name="ptz_z_relative_service_topic" type="str" value="artemisJr/cmdTrtPtzZoomRel" />
+            <param name="take_pano_service_topic" type="str" value="pano_cam/take_pano" />
+            <param name="take_scan_service_topic" type="str" value="lowrate_scanner/take_scan" />
+
+            <!-- Parameter topics -->
+            <!-- Juno TRT localisation data-->
+            <param name="trt_pose_topic" type="str" value="trt_localization/pose" />
+            <param name="trt_localization_status_topic" type="str" value="trt_localization/localization_status" />
+
+            <!-- Juno TRT TM data-->
+            <param name="trt_telemetry_topic" type="str" value="trt/telemetry" />
+            <param name="trt_ptu_topic" type="str" value="artemisJr/ptuData" />
+            <param name="trt_driveline_topic" type="str" value="artemisJr/drivelineData" />
+            <param name="trt_power_topic" type="str" value="artemisJr/powerData" />
+            <param name="trt_electronics_temperature_topic" type="str" value="artemisJr/electronicsTempData" />
+            <param name="trt_pano_feedback_topic" type="str" value="trt_stitcher/take_panorama/feedback" />
+            <param name="trt_scanner_telemetry_topic" type="str" value="lowrate_scanner/telemetry" />
+            <param name="trt_scanner_heart_beat_topic" type="str" value="lowrate_scanner/heart_beat" />
+            <param name="trt_scanner_points_topic" type="str" value="lowrate_scanner/points" />
+            <param name="trt_left_cam_polling_topic" type="str" value="artemisJr/left/poller_node/period_ms" />
+            <param name="trt_right_cam_polling_topic" type="str" value="artemisJr/right/poller_node/period_ms" />
+            <param name="trt_centre_cam_polling_topic" type="str" value="artemisJr/centre/poller_node/period_ms" />
+            <param name="trt_ptz_cam_polling_topic" type="str" value="artemisJr/centre_ptz_polled/poller_node/period_ms" />
+            <param name="trt_velocity_topic" type="str" value="artemisJr/velocityData" />
+            <param name="trt_left_cam_img_topic" type="str" value="artemisJr/left/image_rect_color/compressed" />
+            <param name="trt_right_cam_img_topic" type="str" value="artemisJr/right/image_rect_color/compressed" />
+            <param name="trt_centre_cam_img_topic" type="str" value="artemisJr/centre/image_rect_color/compressed" />
+            <param name="trt_ptz_cam_img_topic" type="str" value="artemisJr/imageData/centrePtzCam" />
+            <param name="trt_pano_img_topic" type="str" value="trt_stitcher/pano" />
+
+            <!-- Asset provides ur5 manipulator data-->
+            <param name="enable_ur5_data" type="bool" value="true" />
+            <param name="ur5_joint_states_topic" type="str" value="joint_states_throttle" />
+            <param name="ur5_wrench_topic" type="str" value="wrench_throttle" />
+            <param name="ur5_telemetry_topic" type="str" value="ur_dashboard/telemetry" />
+
+            <!-- Asset provides camera data-->
+            <param name="enable_camera_data" type="bool" value="false" />
+
+            <!-- Asset provides camera image data-->
+<!--
+            <param name="CAMIMG_DATA" type="bool" value="true" />
+            <param name="camimg_topic" type="str" value="/usb_cam/image" />
+            <param name="camimg_path" type="str" value="$(find mrsrosadapter)/photos/inbox/" />
+            <param name="IMAGE_FORMAT" type="str" value=".png" />
+-->
+
+            <!-- Initial parameters -->
+            <!-- Maximum initial velocity value -->
+            <param name="MAX_VEL_X_INIT_VAL" type="double" value="0.5"/>
+            <!-- Minimum initial velocity value -->
+            <param name="MIN_VEL_X_INIT_VAL" type="double" value="0.1"/>
+            <!-- Maximum initial angular velocity value -->
+            <param name="MAX_ANGVEL_Z_INIT_VAL" type="double" value="0.25"/>
+            <!-- Minimum initial angular velocity value -->
+            <param name="MIN_ANGVEL_Z_INIT_VAL" type="double" value="0.1"/>
+
+            <!-- Yaw tolerance value -->
+            <param name="YAW_TOLERANCE_VAL" type="double" value="1"/>
+            <!-- Distance tolerance value -->
+            <param name="DIST_TOLERANCE_VAL" type="double" value="0.05"/>
+            <!-- Range tolerance for velocity change -->
+            <param name="DIST_TOLERANCE_RANGE" type="double" value="5"/>
+
+            <!-- Juno Rover geometry parameters -->
+            <!-- Wheel base -->
+            <param name="wheel_base" type="double" value="0.287"/>
+            <!-- Wheel separation -->
+            <param name="wheel_track" type="double" value="0.3"/>
+            <!-- Wheel radius -->
+            <param name="wheel_radius" type="double" value="0.035"/>
+        </node>
+
+        <include file="$(find juno_delay_service)/launch/delay_services.launch" />
+        <include file="$(find network_tools)/launch/network_tools.launch" />
+</launch>

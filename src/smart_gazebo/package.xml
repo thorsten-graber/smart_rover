@@ -23,6 +23,7 @@
 
   <depend>smart_description</depend>
   <depend>hector_sensors_description</depend>
+  <depend>hector_gazebo_plugins</depend>
   <depend>gazebo_ros</depend>
   <depend>message_to_tf</depend>
   <depend>robot_state_publisher</depend>

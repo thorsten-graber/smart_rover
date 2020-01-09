@@ -31,6 +31,8 @@
 
 #include <ros/ros.h>
 #include "vehicle_control_interface.h"
+#include "smart_msgs/MotionCommand.h"
+#include "geometry_msgs/Twist.h"
 
 class PointTurnDriveController: public VehicleControlInterface
 {
@@ -40,7 +42,7 @@ public:
         mp_ = mp;
 
         ros::NodeHandle nh;
-        drivePublisher_ = nh.advertise<smart_msgs::MotionCommand>("controller/base/drive", 1);
+        drivePublisher_ = nh.advertise<smart_msgs::MotionCommand>("drive", 1);
 
         wheelBase = 0.300;
         params.getParam("wheelBase", wheelBase);
@@ -57,9 +59,33 @@ public:
         mp_->limitSpeed(speed);
 
         double omega = velocity.angular.z;
-        double atan_gamma = (velocity.linear.x == 0.0 && velocity.linear.y == 0.0) ? 0.0 : atan2(velocity.linear.y , velocity.linear.x);
+        double atan_gamma = (velocity.linear.x == 0.0 && velocity.linear.y == 0.0) ? 0.0 : atan2(velocity.linear.y , fabs(velocity.linear.x));
 
-        publishDriveCommand(speed, omega, atan_gamma);
+        if (speed == 0.0 && omega == 0.0) {
+          // command stop
+          stop();
+        }
+        else if (omega == 0.0) {
+          // command continuous driving
+          point_turn = false;
+
+          drive.speed = speed;
+          drive.steer = backward*atan_gamma;
+          drive.mode = "continuous";
+          drivePublisher_.publish(drive);
+        }
+        else if (speed == 0.0) {
+          // command point turn
+          point_turn = true;
+          drive.speed = (omega < 0) ? -0.1 : 0.1;; //todo:expose parameter to launch file
+          drive.steer = M_PI_4;
+          drive.mode = "point_turn";
+          drivePublisher_.publish(drive);
+        }
+        else {
+          // mixed mode (linar + angular)
+          publishDriveCommand(speed, omega, atan_gamma);
+        }
 
 //          double omega = velocity.angular.z;
 //          double atan_gamma = atan2(velocity.linear.y , velocity.linear.x);

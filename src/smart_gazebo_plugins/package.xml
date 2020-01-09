@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>smart_hardware_interface</name>
+  <name>smart_gazebo_plugins</name>
   <version>0.0.0</version>
-  <description>The smart_hardware_interface package</description>
+  <description>The smart_gazebo_plugins package</description>
 
    <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <maintainer email="Thorsten.Graber@gmail.com">Thorsten Graber</maintainer>
@@ -14,34 +14,23 @@
 
   <!-- Url tags are optional, but multiple are allowed, one per tag -->
   <!-- Optional attribute type can be: website, bugtracker, or repository -->
-  <!-- <url type="website">http://wiki.ros.org/smart_hardware_interface</url> -->
+  <!-- <url type="website">http://wiki.ros.org/smart_gazebo_plugins</url> -->
 
 
   <!-- Author tags are optional, multiple are allowed, one per tag -->
+  <!-- Authors do not have to be maintainers, but could be -->
   <!-- <author email="Thorsten.Graber@gmail.com">Thorsten Graber</author> -->
 
 
   <!-- The *depend tags are used to specify dependencies -->
   <!-- Dependencies can be catkin packages or system dependencies -->
-  <depend>roscpp</depend>
-  <depend>hardware_interface</depend>
-  <depend>controller_manager</depend>
-  <depend>control_msgs</depend>
-  <depend>trajectory_msgs</depend>
-  <depend>actionlib</depend>
-  <depend>pluginlib</depend>
-  <depend>transmission_interface</depend>
-  <depend>urdf</depend>
   <depend>smart_msgs</depend>
-  <depend>smart_description</depend>
-  <depend>joint_limits_interface</depend>
-
+  <depend>roscpp</depend>
+  <depend>gazebo_ros</depend>
   <buildtool_depend>catkin</buildtool_depend>
-
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>
-    <!-- Other tools can request additional information be placed here -->
-
+    <gazebo_ros plugin_path="${prefix}/lib" />
   </export>
 </package>

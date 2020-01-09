@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
 	roscpp
 	smart_msgs
 	geometry_msgs
+        std_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -105,7 +106,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  	INCLUDE_DIRS include
 #  LIBRARIES smart_joystick
-  	CATKIN_DEPENDS roscpp smart_msgs geometry_msgs
+        CATKIN_DEPENDS roscpp smart_msgs geometry_msgs std_msgs
 #  DEPENDS system_lib
 )
 

@@ -4,10 +4,10 @@
         <arg name="robot_initial_pose_y" default="0.0" />
         <arg name="robot_initial_pose_z" default="0.5" />
 
-          <param name="use_sim_time" value="true" />
+        <param name="use_sim_time" value="true" />
 
         <!-- send the robot XML to param server -->
-        <param name="robot_description" command="$(find xacro)/xacro.py '$(find smart_gazebo)/urdf/smart_gazebo.urdf.xacro'" />
+        <param name="robot_description" command="$(find xacro)/xacro '$(find smart_gazebo)/urdf/smart_gazebo.urdf.xacro'" />
 
         <!-- push robot_description to factory and spawn robot in gazebo -->
         <node name="spawn_robot" pkg="gazebo_ros" type="spawn_model"

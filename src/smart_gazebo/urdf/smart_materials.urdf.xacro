@@ -2,7 +2,7 @@
 
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
 
- <macro name="smart_materials">
+ <xacro:macro name="smart_materials">
 
   <!-- GAZEBO MATERIALS -->
   <gazebo reference="base_link">
@@ -85,5 +85,5 @@
     <material>Gazebo/Grey</material>
   </gazebo>
 
-</macro>
+</xacro:macro>
 </robot>
