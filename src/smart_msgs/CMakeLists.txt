@@ -52,8 +52,6 @@ add_message_files(
    	MotionCommand.msg
 	MotorCommand.msg
 	RawSensors.msg
-        Ultrasonic.msg
-        UltrasonicSensors.msg
 )
 
 ## Generate services in the 'srv' folder
