@@ -1,7 +1,7 @@
 ﻿// Include ros libraries
 #include <ros.h>
-#include <mocup_msgs/MotorCommand.h>
-#include <mocup_msgs/RawSensors.h>
+#include <smart_msgs/MotorCommand.h>
+#include <smart_msgs/RawSensors.h>
 
 // Include the Bricktronics libraries
 #include <BricktronicsMegashield.h>
@@ -9,7 +9,7 @@
 #include <BricktronicsUltrasonic.h>
 
 #define BAUD 57600 // 57kbps
-//#define UPDATE_INTERVAL  20  // 1/update rate in ms -> 20ms = 50Hz
+#define UPDATE_INTERVAL  20  // 1/update rate in ms -> 20ms = 50Hz
 
 // Select the desired motor port (MOTOR_1 through MOTOR_6) in the constructor below.
 BricktronicsMotor m1(BricktronicsMegashield::MOTOR_1);
@@ -28,7 +28,7 @@ BricktronicsUltrasonic u4(BricktronicsMegashield::SENSOR_4);
 
 // ROS stuff
 ros::NodeHandle  nh;
-mocup_msgs::RawSensors sensor_readings;
+smart_msgs::RawSensors sensor_readings;
 
 void motorCommandCallback(const mocup_msgs::MotorCommand& cmd_msg)
 {   
@@ -48,7 +48,7 @@ void motorCommandCallback(const mocup_msgs::MotorCommand& cmd_msg)
 }
 
 ros::Publisher sensor_publisher("sensor_readings", &sensor_readings);
-ros::Subscriber<mocup_msgs::MotorCommand> motor_command_subscriber("motor_command", motorCommandCallback);
+ros::Subscriber<smart_msgs::MotorCommand> motor_command_subscriber("motor_command", motorCommandCallback);
 
 void publishSensorReadings()
 {
