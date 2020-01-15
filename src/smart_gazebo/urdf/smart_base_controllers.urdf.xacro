@@ -1,0 +1,148 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <macro name="smart_base_controllers">
+   <!-- CONTROLLERS -->
+  <gazebo>
+
+    <plugin name="all_wheel_steering_controller" filename="liball_wheel_steering_plugin.so">
+      <alwaysOn>true</alwaysOn>
+      <controlRate>50.0</controlRate>
+      <updateRate>0.0</updateRate>
+      <frontLeftAxle>front_left_wheel_joint</frontLeftAxle>
+      <frontRightAxle>front_right_wheel_joint</frontRightAxle>
+      <middleLeftAxle>middle_left_wheel_joint</middleLeftAxle>
+      <middleRightAxle>middle_right_wheel_joint</middleRightAxle>
+      <rearLeftAxle>rear_left_wheel_joint</rearLeftAxle>
+      <rearRightAxle>rear_right_wheel_joint</rearRightAxle>
+      <frontLeftJoint>front_left_wheel_steering_joint</frontLeftJoint>
+      <frontRightJoint>front_right_wheel_steering_joint</frontRightJoint>
+      <middleLeftJoint>middle_left_wheel_steering_joint</middleLeftJoint>
+      <middleRightJoint>middle_right_wheel_steering_joint</middleRightJoint>
+      <rearLeftJoint>rear_left_wheel_steering_joint</rearLeftJoint>
+      <rearRightJoint>rear_right_wheel_steering_joint</rearRightJoint>
+      <wheelBase>0.304</wheelBase>
+      <wheelTrack>0.295</wheelTrack>
+      <wheelRadius>0.035</wheelRadius>
+      <jointMaxTorque>10</jointMaxTorque>
+      <wheelMaxTorque>10</wheelMaxTorque>
+      <jointMaxVelocity>0.33</jointMaxVelocity>
+      <maxVelX>0.1</maxVelX>
+      <topicName>drive</topicName>
+      <jointStateName>joint_states</jointStateName>
+    </plugin>
+
+    <plugin name="p3d_base_controller" filename="libgazebo_ros_p3d.so">
+      <alwaysOn>true</alwaysOn>
+      <updateRate>50.0</updateRate>
+      <bodyName>base_link</bodyName>
+      <topicName>state</topicName>
+      <gaussianNoise>0.01</gaussianNoise>
+      <xyzOffsets>0 0 0</xyzOffsets>
+      <rpyOffsets>0 0 0</rpyOffsets>
+      <frameName>map</frameName>
+    </plugin>
+
+      <plugin name="camera_servo_controller" filename="libhector_servo_plugin.so">
+        <alwaysOn>true</alwaysOn>
+        <controlRate>50.0</controlRate>
+        <updateRate>0.0</updateRate>
+        <firstServoName>camera/z</firstServoName>
+        <firstServoAxis>0 0 1</firstServoAxis>
+        <secondServoName>camera/y</secondServoName>
+        <secondServoAxis>0 1 0</secondServoAxis>
+        <torque>0.5</torque>
+        <topicName>camera/command</topicName>
+        <jointStateName>joint_states</jointStateName>
+        <proportionalControllerGain>8.0</proportionalControllerGain>
+        <derivativeControllerGain>0.0</derivativeControllerGain>
+        <maxVelocity>2.0</maxVelocity>
+      </plugin>
+
+  </gazebo>
+
+  <!-- GAZEBO MATERIALS -->
+  <gazebo reference="base_link">
+    <material>Gazebo/Grey</material>
+  </gazebo>
+
+    <gazebo reference="front_left_wheel_steering_link" >
+      <material>Gazebo/Grey</material>
+    </gazebo>
+
+    <gazebo reference="front_right_wheel_steering_link" >
+      <material>Gazebo/Grey</material>
+    </gazebo>
+
+    <gazebo reference="middle_left_wheel_steering_link" >
+      <material>Gazebo/Grey</material>
+    </gazebo>
+
+    <gazebo reference="middle_right_wheel_steering_link" >
+      <material>Gazebo/Grey</material>
+    </gazebo>
+
+    <gazebo reference="rear_left_wheel_steering_link" >
+      <material>Gazebo/Grey</material>
+    </gazebo>
+
+    <gazebo reference="rear_right_wheel_steering_link" >
+      <material>Gazebo/Grey</material>
+    </gazebo>
+
+    <gazebo reference="front_left_motor_link" >
+      <material>Gazebo/Red</material>
+    </gazebo>
+
+    <gazebo reference="front_right_motor_link" >
+      <material>Gazebo/Red</material>
+    </gazebo>
+
+    <gazebo reference="middle_left_motor_link" >
+      <material>Gazebo/Red</material>
+    </gazebo>
+
+    <gazebo reference="middle_right_motor_link" >
+      <material>Gazebo/Red</material>
+    </gazebo>
+
+    <gazebo reference="rear_left_motor_link" >
+      <material>Gazebo/Red</material>
+    </gazebo>
+
+    <gazebo reference="rear_right_motor_link" >
+      <material>Gazebo/Red</material>
+    </gazebo>
+
+    <gazebo reference="front_left_wheel_link" >
+      <material>Gazebo/Black</material>
+    </gazebo>
+
+    <gazebo reference="front_right_wheel_link" >
+      <material>Gazebo/Black</material>
+    </gazebo>
+
+    <gazebo reference="middle_left_wheel_link" >
+      <material>Gazebo/Black</material>
+    </gazebo>
+
+    <gazebo reference="middle_right_wheel_link" >
+      <material>Gazebo/Black</material>
+    </gazebo>
+
+    <gazebo reference="rear_left_wheel_link" >
+      <material>Gazebo/Black</material>
+    </gazebo>
+
+    <gazebo reference="rear_right_wheel_link" >
+      <material>Gazebo/Black</material>
+    </gazebo>
+
+    <gazebo reference="camera_mast_link" >
+      <material>Gazebo/Grey</material>
+    </gazebo>
+
+  </macro>
+</robot>
+
