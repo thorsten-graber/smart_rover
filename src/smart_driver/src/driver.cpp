@@ -301,8 +301,8 @@ void Driver::publishOdometry()
     double euler[3];
     quaternion2euler(odom.pose.pose.orientation, euler);
     s = r * 2 * (alpha_l + alpha_r)/2/3;  // includes gear factor (2/3) // todo: make this parameter configurable
-    x = s * cos(euler[0]);
-    y = s * sin(euler[0]);
+    x = s * cos(euler[2]);
+    y = s * sin(euler[2]);
 
     // Compute delta t
     double dt = actual_readings.stamp.toSec() - previous_readings.stamp.toSec();
@@ -352,13 +352,13 @@ void Driver::publishJointStates()
     motor_control_parameters.motor_states.position[4]  = 0;
     motor_control_parameters.motor_states.position[5]  = -actual_readings.motor.angle.left_steering_wheel_joint;
 
-    motor_control_parameters.motor_states.position[6]  = actual_readings.motor.angle.right_wheel_joint / cos(actual_readings.motor.angle.right_steering_wheel_joint);;
+    motor_control_parameters.motor_states.position[6]  = actual_readings.motor.angle.right_wheel_joint / cos(actual_readings.motor.angle.right_steering_wheel_joint);
     motor_control_parameters.motor_states.position[7]  = actual_readings.motor.angle.right_wheel_joint;
-    motor_control_parameters.motor_states.position[8]  = actual_readings.motor.angle.right_wheel_joint / cos(actual_readings.motor.angle.right_steering_wheel_joint);;
+    motor_control_parameters.motor_states.position[8]  = actual_readings.motor.angle.right_wheel_joint / cos(actual_readings.motor.angle.right_steering_wheel_joint);
 
-    motor_control_parameters.motor_states.position[9]  = actual_readings.motor.angle.left_wheel_joint / cos(actual_readings.motor.angle.left_steering_wheel_joint);;
+    motor_control_parameters.motor_states.position[9]  = actual_readings.motor.angle.left_wheel_joint / cos(actual_readings.motor.angle.left_steering_wheel_joint);
     motor_control_parameters.motor_states.position[10] = actual_readings.motor.angle.left_wheel_joint;
-    motor_control_parameters.motor_states.position[11] = actual_readings.motor.angle.left_wheel_joint / cos(actual_readings.motor.angle.left_steering_wheel_joint);;
+    motor_control_parameters.motor_states.position[11] = actual_readings.motor.angle.left_wheel_joint / cos(actual_readings.motor.angle.left_steering_wheel_joint);
 
     motor_control_parameters.motor_states.position[12] = actual_readings.motor.angle.camera_pan;
     motor_control_parameters.motor_states.position[13] = actual_readings.motor.angle.camera_tilt;
