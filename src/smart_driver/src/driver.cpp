@@ -44,6 +44,9 @@ static double maxDeltaFilter(double y, double x, double c) {
 Driver::Driver(const std::string& ns)
     : nh(ns)
 {
+    world_frame_id = "map";
+    rover_frame_id = "base_link";
+
     motor_control_parameters.min_velocity        = 0.01;
     motor_control_parameters.max_velocity        = 0.1;
     motor_control_parameters.min_object_distance = 0.2;
@@ -75,6 +78,8 @@ Driver::Driver(const std::string& ns)
     ros::NodeHandle params("~");
     params.getParam("min_velocity", motor_control_parameters.min_velocity);
     params.getParam("max_velocity", motor_control_parameters.max_velocity);
+    params.getParam("wold_frame_id", world_frame_id);
+    params.getParam("rover_frame_id", rover_frame_id);
 
     motion_command_subscriber = nh.subscribe("drive", 10, &Driver::motionCommandCallback, this);
     camera_command_subscriber = nh.subscribe("camera/command", 10, &Driver::cameraCommandCallback, this);
@@ -110,15 +115,15 @@ void Driver::reset()
 
     actual_readings.motor.position.left_wheel_joint             = 0;
     actual_readings.motor.position.right_wheel_joint            = 0;
-    actual_readings.motor.position.left_steering_wheel_joint  = 0;
-    actual_readings.motor.position.right_steering_wheel_joint = 0;
+    actual_readings.motor.position.left_steering_wheel_joint    = 0;
+    actual_readings.motor.position.right_steering_wheel_joint   = 0;
     actual_readings.motor.position.camera_pan                   = 0;
     actual_readings.motor.position.camera_tilt                  = 0;
 
     actual_readings.motor.overflow.left_wheel_joint             = 0;
     actual_readings.motor.overflow.right_wheel_joint            = 0;
-    actual_readings.motor.overflow.left_steering_wheel_joint  = 0;
-    actual_readings.motor.overflow.right_steering_wheel_joint = 0;
+    actual_readings.motor.overflow.left_steering_wheel_joint    = 0;
+    actual_readings.motor.overflow.right_steering_wheel_joint   = 0;
     actual_readings.motor.overflow.camera_pan                   = 0;
     actual_readings.motor.overflow.camera_tilt                  = 0;
 
@@ -127,26 +132,26 @@ void Driver::reset()
     actual_readings.ultrasonic.range_rl = NO_OBSTICAL;
     actual_readings.ultrasonic.range_rr = NO_OBSTICAL;
 
-    previous_readings.motor.position.left_wheel_joint             = 0;
-    previous_readings.motor.position.right_wheel_joint            = 0;
+    previous_readings.motor.position.left_wheel_joint           = 0;
+    previous_readings.motor.position.right_wheel_joint          = 0;
     previous_readings.motor.position.left_steering_wheel_joint  = 0;
     previous_readings.motor.position.right_steering_wheel_joint = 0;
-    previous_readings.motor.position.camera_pan                   = 0;
-    previous_readings.motor.position.camera_tilt                  = 0;
+    previous_readings.motor.position.camera_pan                 = 0;
+    previous_readings.motor.position.camera_tilt                = 0;
 
-    previous_readings.motor.overflow.left_wheel_joint             = 0;
-    previous_readings.motor.overflow.right_wheel_joint            = 0;
+    previous_readings.motor.overflow.left_wheel_joint           = 0;
+    previous_readings.motor.overflow.right_wheel_joint          = 0;
     previous_readings.motor.overflow.left_steering_wheel_joint  = 0;
     previous_readings.motor.overflow.right_steering_wheel_joint = 0;
-    previous_readings.motor.overflow.camera_pan                   = 0;
-    previous_readings.motor.overflow.camera_tilt                  = 0;
+    previous_readings.motor.overflow.camera_pan                 = 0;
+    previous_readings.motor.overflow.camera_tilt                = 0;
 
     previous_readings.ultrasonic.range_fl = NO_OBSTICAL;
     previous_readings.ultrasonic.range_fr = NO_OBSTICAL;
     previous_readings.ultrasonic.range_rl = NO_OBSTICAL;
     previous_readings.ultrasonic.range_rr = NO_OBSTICAL;
 
-    // todo: reset odometric pose and tf
+    // reset odometry pose and tf
     odom.pose.pose.position.x    = 0;
     odom.pose.pose.position.y    = 0;
     odom.pose.pose.position.z    = 0;
@@ -252,8 +257,8 @@ void Driver::readSensorsCallback(const smart_msgs::RawSensors &sensor_msg) {
     actual_readings.motor.angle.right_wheel_joint            = degToRad(posToDeg(actual_readings.motor.position.right_wheel_joint));
     actual_readings.motor.angle.left_wheel_joint             = degToRad(posToDeg(actual_readings.motor.position.left_wheel_joint));
 
-    actual_readings.motor.angle.right_steering_wheel_joint = degToRad(sensor_msg.steer_r);
-    actual_readings.motor.angle.left_steering_wheel_joint  = degToRad(sensor_msg.steer_l);
+    actual_readings.motor.angle.right_steering_wheel_joint   = degToRad(sensor_msg.steer_r);
+    actual_readings.motor.angle.left_steering_wheel_joint    = degToRad(sensor_msg.steer_l);
     actual_readings.motor.angle.camera_pan                   = degToRad(sensor_msg.cam_yaw);
     actual_readings.motor.angle.camera_tilt                  = degToRad(sensor_msg.cam_pit);
 
@@ -305,10 +310,10 @@ void Driver::publishOdometry()
     // Publish Odom
     // set header
     odom.header.stamp    = actual_readings.stamp;
-    odom.header.frame_id = "map";                   // todo: magic string
+    odom.header.frame_id = world_frame_id.c_str();
 
     //Compute velocity
-    odom.child_frame_id        = "base_link";       // todo: magic string
+    odom.child_frame_id        = rover_frame_id.c_str();
     odom.twist.twist.linear.x  = x / dt;
     odom.twist.twist.linear.y  = y / dt;
     odom.twist.twist.angular.z = yaw / dt;
@@ -325,8 +330,8 @@ void Driver::publishOdometry()
 
     // Publish tf
     odom_trans.header.stamp    = actual_readings.stamp;
-    odom_trans.header.frame_id = "map";             // todo: magic string
-    odom_trans.child_frame_id  = "base_link";       // todo: magic string
+    odom_trans.header.frame_id = world_frame_id.c_str();
+    odom_trans.child_frame_id  = rover_frame_id.c_str();
 
     odom_trans.transform.translation.x = odom.pose.pose.position.x;
     odom_trans.transform.translation.y = odom.pose.pose.position.y;

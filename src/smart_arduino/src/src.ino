@@ -1,4 +1,4 @@
-﻿// Include ros libraries
+// Include ros libraries
 #include <ros.h>
 #include <smart_msgs/MotorCommand.h>
 #include <smart_msgs/RawSensors.h>
@@ -30,7 +30,7 @@ BricktronicsUltrasonic u4(BricktronicsMegashield::SENSOR_4);
 ros::NodeHandle  nh;
 smart_msgs::RawSensors sensor_readings;
 
-void motorCommandCallback(const mocup_msgs::MotorCommand& cmd_msg)
+void motorCommandCallback(const smart_msgs::MotorCommand& cmd_msg)
 {   
     m1.setSpeed(-cmd_msg.speed_r);
     m2.goToAngle(cmd_msg.steer_r);

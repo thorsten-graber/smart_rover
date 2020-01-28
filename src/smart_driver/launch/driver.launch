@@ -3,6 +3,7 @@
 <launch>
   <node pkg="smart_driver" type="smart_driver_node" name="smart_driver" output="screen">
     <!-- param name="goal_angle_tolerance" value="0.087266463" / -->
+    <param name="wold_frame_id" value="world" />
   </node>
 </launch>
 

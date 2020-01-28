@@ -108,6 +108,9 @@ public:
     boost::mutex mutex;
     double steer_old;
     std::string mode_old;
+
+    std::string world_frame_id;
+    std::string rover_frame_id;
 };
 
 #endif // SMART_DRIVER_H
