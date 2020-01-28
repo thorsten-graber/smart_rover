@@ -45,7 +45,7 @@ Driver::Driver(const std::string& ns)
     : nh(ns)
 {
     world_frame_id = "map";
-    rover_frame_id = "base_link";
+    base_frame_id = "base_link";
 
     motor_control_parameters.min_velocity        = 0.01;
     motor_control_parameters.max_velocity        = 0.1;
@@ -79,7 +79,7 @@ Driver::Driver(const std::string& ns)
     params.getParam("min_velocity", motor_control_parameters.min_velocity);
     params.getParam("max_velocity", motor_control_parameters.max_velocity);
     params.getParam("wold_frame_id", world_frame_id);
-    params.getParam("rover_frame_id", rover_frame_id);
+    params.getParam("base_frame_id", base_frame_id);
 
     motion_command_subscriber = nh.subscribe("drive", 10, &Driver::motionCommandCallback, this);
     camera_command_subscriber = nh.subscribe("camera/command", 10, &Driver::cameraCommandCallback, this);
@@ -313,7 +313,7 @@ void Driver::publishOdometry()
     odom.header.frame_id = world_frame_id.c_str();
 
     //Compute velocity
-    odom.child_frame_id        = rover_frame_id.c_str();
+    odom.child_frame_id        = base_frame_id.c_str();
     odom.twist.twist.linear.x  = x / dt;
     odom.twist.twist.linear.y  = y / dt;
     odom.twist.twist.angular.z = yaw / dt;
@@ -331,7 +331,7 @@ void Driver::publishOdometry()
     // Publish tf
     odom_trans.header.stamp    = actual_readings.stamp;
     odom_trans.header.frame_id = world_frame_id.c_str();
-    odom_trans.child_frame_id  = rover_frame_id.c_str();
+    odom_trans.child_frame_id  = base_frame_id.c_str();
 
     odom_trans.transform.translation.x = odom.pose.pose.position.x;
     odom_trans.transform.translation.y = odom.pose.pose.position.y;

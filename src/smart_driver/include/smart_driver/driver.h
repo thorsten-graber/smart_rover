@@ -110,7 +110,7 @@ public:
     std::string mode_old;
 
     std::string world_frame_id;
-    std::string rover_frame_id;
+    std::string base_frame_id;
 };
 
 #endif // SMART_DRIVER_H

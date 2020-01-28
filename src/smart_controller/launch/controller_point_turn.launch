@@ -4,6 +4,8 @@
   <node pkg="smart_controller" type="smart_controller_node" name="smart_controller" output="screen">
     <param name="vehicle_control_type" value="point_turn_driving" />
 
+    <param name="frame_id" value="world" />
+
     <param name="carrot_distance" value="25" />
     <param name="speed" value="0.1" />
     <param name="max_speed" value="0.1" />

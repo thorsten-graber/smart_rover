@@ -1,5 +1,8 @@
 #Catkin workspace
 build/
 devel/
+logs/
 .catkin_workspace
+.catkin_tools/
 smart_rover.*
+src/smart_arduino/libraries/ros_lib/
