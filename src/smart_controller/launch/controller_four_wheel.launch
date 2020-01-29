@@ -7,6 +7,7 @@
     <param name="frame_id" value="world" />
 
     <param name="carrot_distance" value="0.75" />
+    <param name="speed" value="0.04" />
     <param name="max_speed" value="0.05" />
     <param name="check_if_blocked" value="false" />
     <param name="velocity_blocked_limit" value="0.8" />
