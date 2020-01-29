@@ -24,7 +24,7 @@ Controller::Controller(const std::string& ns)
   , state(INACTIVE)
 {
   motion_control_setup.carrot_distance = 1.0;
-  motion_control_setup.current_speed = 0.1;
+  motion_control_setup.current_speed = 0.0;
   motion_control_setup.min_speed = 0.01;
   motion_control_setup.max_speed = 0.1;
   motion_control_setup.inclination_speed_reduction_factor = 0.5 / (10 * M_PI/180.0); // 0.5 per 10 degrees
@@ -65,7 +65,6 @@ bool Controller::configure()
   params.getParam("carrot_distance", motion_control_setup.carrot_distance);
   params.getParam("min_speed", motion_control_setup.min_speed);
   params.getParam("max_speed", motion_control_setup.max_speed);
-  params.getParam("speed", motion_control_setup.current_speed);
   params.getParam("frame_id", map_frame_id);
   params.getParam("base_frame_id", base_frame_id);
   params.getParam("camera_control", camera_control);

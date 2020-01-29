@@ -28,7 +28,7 @@
       <jointMaxTorque>10</jointMaxTorque>
       <wheelMaxTorque>10</wheelMaxTorque>
       <jointMaxVelocity>0.33</jointMaxVelocity>
-      <maxVelX>0.1</maxVelX>
+      <maxVelX>0.05</maxVelX>
       <topicName>drive</topicName>
       <jointStateName>joint_states</jointStateName>
     </plugin>
